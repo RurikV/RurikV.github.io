@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { Layout } from './Layout';
+import { ThemeProvider } from '../../../contexts/ThemeContext';
+import { LanguageProvider } from '../../../contexts/LanguageContext';
+import '../../../i18n/config';
 
 const meta: Meta<typeof Layout> = {
   title: 'PickleMatch/Layout/Layout',
@@ -8,6 +12,15 @@ const meta: Meta<typeof Layout> = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    (Story) => (
+      <ThemeProvider>
+        <LanguageProvider>
+          <Story />
+        </LanguageProvider>
+      </ThemeProvider>
+    ),
+  ],
   argTypes: {
     children: {
       control: 'text',
@@ -38,8 +51,14 @@ export const Default: Story = {
 
 export const WithLongContent: Story = {
   args: {
-    children: Array(50).fill(0).map((_, i) => 
-      `Paragraph ${i + 1}: This is a long content section to demonstrate the sticky header behavior. When you scroll down, the header should remain fixed at the top of the viewport.`
-    ).join('\n\n'),
+    children: Array(50)
+      .fill(0)
+      .map(
+        (_, i) =>
+          `Paragraph ${
+            i + 1
+          }: This is a long content section to demonstrate the sticky header behavior. When you scroll down, the header should remain fixed at the top of the viewport.`
+      )
+      .join('\n\n'),
   },
 };
