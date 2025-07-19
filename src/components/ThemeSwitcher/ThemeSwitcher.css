@@ -1,0 +1,55 @@
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.theme-switcher:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.theme-switcher:active {
+  transform: translateY(0);
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.theme-switcher:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.theme-switcher__icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.theme-switcher__text {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Compact version for header */
+.theme-switcher--compact {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.theme-switcher--compact .theme-switcher__icon {
+  font-size: 14px;
+}
+
+.theme-switcher--compact .theme-switcher__text {
+  font-size: 12px;
+}
