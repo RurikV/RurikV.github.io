@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage, Language } from '../../contexts/LanguageContext';
-import './LanguageSwitcher.css';
+import './LanguageSwitcher.scss';
 
 export interface LanguageSwitcherProps {
   className?: string;

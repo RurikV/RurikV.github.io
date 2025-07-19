@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '../picklematch/modal/Modal';
 import { useLanguage } from '../../contexts/LanguageContext';
-import './ModalDemo.css';
+import './ModalDemo.scss';
 
 export interface ModalDemoProps {
   className?: string;

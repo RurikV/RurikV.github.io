@@ -1,3 +1,6 @@
+@import '../../styles/themes/variables';
+@import '../../styles/themes/mixins';
+
 .modal-demo {
   padding: 20px;
   max-width: 500px;
@@ -12,26 +15,31 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #333;
+  
+  @include themed(color, color-text-primary);
 }
 
 .modal-demo__input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
   transition: border-color 0.2s ease;
+  border: 2px solid;
+  
+  @include themed(border-color, color-border);
+  @include themed(background-color, color-bg-primary);
+  @include themed(color, color-text-primary);
 }
 
 .modal-demo__input:focus {
   outline: none;
-  border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  
+  @include themed(border-color, color-primary);
 }
 
 .modal-demo__button {
-  background-color: #007bff;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -39,14 +47,16 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  
+  @include themed(background-color, color-primary);
 }
 
 .modal-demo__button:hover {
-  background-color: #0056b3;
+  @include themed(background-color, color-primary-hover);
 }
 
 .modal-demo__button:active {
-  background-color: #004085;
+  @include themed(background-color, color-primary-active);
 }
 
 .modal-demo__content {
@@ -56,12 +66,14 @@
 .modal-demo__content h2 {
   margin-top: 0;
   margin-bottom: 16px;
-  color: #333;
+  
+  @include themed(color, color-text-primary);
 }
 
 .modal-demo__content p {
   font-size: 16px;
   line-height: 1.5;
-  color: #666;
   margin: 0;
+  
+  @include themed(color, color-text-secondary);
 }

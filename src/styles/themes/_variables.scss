@@ -1,0 +1,66 @@
+// Light theme variables
+$light-theme: (
+  // Primary colors
+  color-primary: #007bff,
+  color-primary-hover: #0056b3,
+  color-primary-active: #004085,
+  color-secondary: #6c757d,
+  color-success: #28a745,
+  color-danger: #dc3545,
+  color-warning: #ffc107,
+  color-info: #17a2b8,
+  
+  // Background colors
+  color-bg-primary: #ffffff,
+  color-bg-secondary: #f8f9fa,
+  color-bg-tertiary: #e9ecef,
+  
+  // Text colors
+  color-text-primary: #212529,
+  color-text-secondary: #6c757d,
+  color-text-muted: #868e96,
+  
+  // Border colors
+  color-border: #dee2e6,
+  color-border-light: #e9ecef,
+  
+  // Shadow
+  shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075),
+  shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15),
+  shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175)
+);
+
+// Dark theme variables
+$dark-theme: (
+  // Primary colors
+  color-primary: #0d6efd,
+  color-primary-hover: #0b5ed7,
+  color-primary-active: #0a58ca,
+  color-secondary: #6c757d,
+  color-success: #198754,
+  color-danger: #dc3545,
+  color-warning: #ffc107,
+  color-info: #0dcaf0,
+  
+  // Background colors
+  color-bg-primary: #212529,
+  color-bg-secondary: #343a40,
+  color-bg-tertiary: #495057,
+  
+  // Text colors
+  color-text-primary: #ffffff,
+  color-text-secondary: #adb5bd,
+  color-text-muted: #6c757d,
+  
+  // Border colors
+  color-border: #495057,
+  color-border-light: #343a40,
+  
+  // Shadow
+  shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3),
+  shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4),
+  shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.5)
+);
+
+// Current theme variable (will be set dynamically)
+$current-theme: $light-theme !default;
