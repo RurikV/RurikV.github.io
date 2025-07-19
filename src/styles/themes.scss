@@ -1,5 +1,6 @@
-@import './themes/variables';
-@import './themes/mixins';
+@use './themes/variables' as *;
+@use './themes/mixins' as *;
+@use 'sass:map';
 
 // Base theme styles
 body {
@@ -13,15 +14,15 @@ body {
 // Theme-specific body styles
 [data-theme="light"] {
   body {
-    background-color: map-get($light-theme, color-bg-primary);
-    color: map-get($light-theme, color-text-primary);
+    background-color: map.get($light-theme, color-bg-primary);
+    color: map.get($light-theme, color-text-primary);
   }
 }
 
 [data-theme="dark"] {
   body {
-    background-color: map-get($dark-theme, color-bg-primary);
-    color: map-get($dark-theme, color-text-primary);
+    background-color: map.get($dark-theme, color-bg-primary);
+    color: map.get($dark-theme, color-text-primary);
   }
 }
 

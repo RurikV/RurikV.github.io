@@ -1,8 +1,9 @@
-@import './variables';
+@use './variables' as *;
+@use 'sass:map';
 
 // Function to get theme value
 @function theme-get($key, $theme: $current-theme) {
-  @return map-get($theme, $key);
+  @return map.get($theme, $key);
 }
 
 // Mixin to apply light theme
@@ -32,11 +33,11 @@
   #{$property}: theme-get($key);
   
   [data-theme="light"] & {
-    #{$property}: map-get($light-theme, $key);
+    #{$property}: map.get($light-theme, $key);
   }
   
   [data-theme="dark"] & {
-    #{$property}: map-get($dark-theme, $key);
+    #{$property}: map.get($dark-theme, $key);
   }
 }
 

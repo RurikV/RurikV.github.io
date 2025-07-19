@@ -1,5 +1,4 @@
-@import '../../styles/themes/variables';
-@import '../../styles/themes/mixins';
+@use '../../styles/themes/mixins' as *;
 
 .modal-demo {
   padding: 20px;
