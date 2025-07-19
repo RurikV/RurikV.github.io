@@ -1,0 +1,65 @@
+.picklematch-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 12px 0;
+}
+
+.picklematch-header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.picklematch-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.picklematch-header-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.2s;
+  padding: 8px 0;
+}
+
+.picklematch-header-link:hover {
+  color: #4CAF50;
+}
+
+.picklematch-header-link:active {
+  color: #45a049;
+}
+
+@media (max-width: 768px) {
+  .picklematch-header-container {
+    padding: 0 16px;
+  }
+  
+  .picklematch-header-nav {
+    gap: 20px;
+  }
+  
+  .picklematch-header-link {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .picklematch-header-nav {
+    gap: 16px;
+  }
+  
+  .picklematch-header-link {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,96 @@
+.picklematch-full-product {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.picklematch-full-product-image-container {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
+.picklematch-full-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.picklematch-full-product-content {
+  padding: 32px;
+}
+
+.picklematch-full-product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.picklematch-full-product-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.picklematch-full-product-price {
+  font-size: 32px;
+  font-weight: 700;
+  color: #4CAF50;
+}
+
+.picklematch-full-product-category {
+  background-color: #f5f5f5;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  align-self: flex-start;
+}
+
+.picklematch-full-product-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+  line-height: 1.3;
+}
+
+.picklematch-full-product-description {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+}
+
+.picklematch-full-product-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  .picklematch-full-product-image-container {
+    height: 300px;
+  }
+  
+  .picklematch-full-product-content {
+    padding: 20px;
+  }
+  
+  .picklematch-full-product-price {
+    font-size: 24px;
+  }
+  
+  .picklematch-full-product-title {
+    font-size: 22px;
+  }
+  
+  .picklematch-full-product-description {
+    font-size: 14px;
+  }
+}
