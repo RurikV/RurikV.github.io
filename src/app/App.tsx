@@ -5,16 +5,18 @@ import '../styles/themes.scss';
 import '../i18n/config';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
+import { Header } from '../components/picklematch/header/Header';
 
 const AppContent: React.FC = () => {
   const { t } = useLanguage();
 
   return (
     <div className="App">
-      <header className="App-header">
+      <Header />
+      <main className="App-main">
         <img src={logo} className="App-logo" alt="logo" />
         <p>{t('app_text')}</p>
-      </header>
+      </main>
     </div>
   );
 };

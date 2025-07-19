@@ -5,7 +5,7 @@ import { Logo } from '../logo/Logo';
 import { ThemeSwitcher } from '../../ThemeSwitcher/ThemeSwitcher';
 import { LanguageSwitcher } from '../../LanguageSwitcher/LanguageSwitcher';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import './Header.css';
+import './Header.scss';
 
 export const Header: FC<HeaderProps> = ({ className }) => {
   const { t } = useLanguage();

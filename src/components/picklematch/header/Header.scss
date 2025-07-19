@@ -1,11 +1,16 @@
+@use '../../../styles/themes/mixins' as *;
+
 .picklematch-header {
   position: sticky;
   top: 0;
-  background-color: white;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 100;
   padding: 12px 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  
+  @include themed(background-color, color-bg-primary);
+  @include themed(border-bottom-color, color-border);
 }
 
 .picklematch-header-container {
@@ -25,19 +30,20 @@
 
 .picklematch-header-link {
   text-decoration: none;
-  color: #333;
   font-weight: 500;
   font-size: 16px;
   transition: color 0.2s;
   padding: 8px 0;
-}
-
-.picklematch-header-link:hover {
-  color: #4CAF50;
-}
-
-.picklematch-header-link:active {
-  color: #45a049;
+  
+  @include themed(color, color-text-primary);
+  
+  &:hover {
+    @include themed(color, color-primary);
+  }
+  
+  &:active {
+    @include themed(color, color-primary-active);
+  }
 }
 
 @media (max-width: 768px) {
