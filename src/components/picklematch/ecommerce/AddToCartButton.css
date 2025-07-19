@@ -1,0 +1,73 @@
+.picklematch-add-to-cart-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 120px;
+}
+
+.picklematch-add-to-cart-button:hover {
+  background-color: #45a049;
+}
+
+.picklematch-add-to-cart-button:active {
+  background-color: #3d8b40;
+}
+
+.picklematch-cart-counter {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.picklematch-cart-counter-button {
+  background-color: #f5f5f5;
+  border: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.picklematch-cart-counter-button:hover {
+  background-color: #e0e0e0;
+}
+
+.picklematch-cart-counter-button:active {
+  background-color: #d0d0d0;
+}
+
+.picklematch-cart-counter-button.decrease {
+  color: #f44336;
+}
+
+.picklematch-cart-counter-button.increase {
+  color: #4CAF50;
+}
+
+.picklematch-cart-counter-value {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 8px;
+  min-width: 40px;
+  background-color: white;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

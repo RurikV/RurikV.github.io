@@ -1,0 +1,56 @@
+.picklematch-brief-transaction {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.picklematch-brief-transaction:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.picklematch-brief-transaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.picklematch-brief-transaction-amount {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.picklematch-brief-transaction-amount.positive {
+  color: #4CAF50;
+}
+
+.picklematch-brief-transaction-amount.negative {
+  color: #f44336;
+}
+
+.picklematch-brief-transaction-category {
+  background-color: #f5f5f5;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.picklematch-brief-transaction-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.picklematch-brief-transaction-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
