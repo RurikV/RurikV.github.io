@@ -58,10 +58,7 @@ export const SliderRange: FC<SliderRangeProps> = ({ className, value, onChange, 
     <div className={rootClasses}>
       <div onMouseDown={onStart} onTouchStart={onStart} className="picklematch-slider-range-field" onClick={onClick}>
         <div className="picklematch-slider-range-track" />
-        <div 
-          className="picklematch-slider-range-runner" 
-          style={{ left: ((_value - min) / range) * 100 + '%' }}
-        />
+        <div className="picklematch-slider-range-runner" style={{ left: ((_value - min) / range) * 100 + '%' }} />
       </div>
       <SliderRangeInput value={value} onChange={onChange} min={min} max={max} />
     </div>

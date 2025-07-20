@@ -69,3 +69,59 @@ export interface CartItemProps {
   count: number;
   onRemove?: () => void;
 }
+
+// Form interfaces
+export interface ProfileFormData {
+  name: string;
+  about: string;
+}
+
+export interface ProfileFormProps {
+  initialValues?: ProfileFormData;
+  onSubmit: (values: ProfileFormData) => void;
+  className?: string;
+}
+
+export interface ProductFormData {
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string;
+}
+
+export interface ProductFormErrors {
+  title?: string;
+  description?: string;
+  price?: string;
+  category?: string;
+  image?: string;
+}
+
+export interface ProductFormProps {
+  initialValues?: ProductFormData;
+  onSubmit: (values: ProductFormData) => void;
+  className?: string;
+}
+
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  name: string;
+}
+
+export interface LoginFormProps {
+  onSubmit: (values: LoginFormData) => void;
+  className?: string;
+}
+
+export interface RegisterFormProps {
+  onSubmit: (values: RegisterFormData) => void;
+  className?: string;
+}

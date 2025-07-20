@@ -31,7 +31,8 @@ export const Default: Story = {
 
 export const WithLongText: Story = {
   args: {
-    title: 'This is a much longer tooltip text that demonstrates how the component handles longer content with proper word wrapping.',
+    title:
+      'This is a much longer tooltip text that demonstrates how the component handles longer content with proper word wrapping.',
     children: <button>Hover for long tooltip</button>,
   },
 };
@@ -52,7 +53,13 @@ export const WithComplexContent: Story = {
         Tooltips can contain HTML elements!
       </div>
     ),
-    children: <button style={{ backgroundColor: '#007bff', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '4px' }}>Styled Button</button>,
+    children: (
+      <button
+        style={{ backgroundColor: '#007bff', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '4px' }}
+      >
+        Styled Button
+      </button>
+    ),
   },
 };
 
@@ -60,9 +67,9 @@ export const OnImage: Story = {
   args: {
     title: 'This tooltip appears on an image',
     children: (
-      <img 
-        src="https://via.placeholder.com/100x100/007bff/ffffff?text=Image" 
-        alt="Placeholder" 
+      <img
+        src="https://via.placeholder.com/100x100/007bff/ffffff?text=Image"
+        alt="Placeholder"
         style={{ cursor: 'pointer' }}
       />
     ),

@@ -1,0 +1,110 @@
+.picklematch-profile-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.picklematch-profile-form-field {
+  margin-bottom: 20px;
+}
+
+.picklematch-profile-form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333;
+  font-size: 14px;
+}
+
+.picklematch-profile-form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.picklematch-profile-form-input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.picklematch-profile-form-input-error {
+  border-color: #f44336;
+}
+
+.picklematch-profile-form-input-error:focus {
+  border-color: #f44336;
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+.picklematch-profile-form-error {
+  display: block;
+  margin-top: 6px;
+  color: #f44336;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.picklematch-profile-form-submit {
+  width: 100%;
+  padding: 14px 24px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.picklematch-profile-form-submit:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+.picklematch-profile-form-submit:active {
+  background: #3d8b40;
+  transform: translateY(0);
+}
+
+.picklematch-profile-form-submit:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .picklematch-profile-form {
+    margin: 0 16px;
+    padding: 20px;
+  }
+  
+  .picklematch-profile-form-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  .picklematch-profile-form {
+    margin: 0 12px;
+    padding: 16px;
+  }
+  
+  .picklematch-profile-form-field {
+    margin-bottom: 16px;
+  }
+  
+  .picklematch-profile-form-submit {
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+}

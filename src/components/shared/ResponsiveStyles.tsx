@@ -79,11 +79,13 @@ export interface ResponsiveProps {
 }
 
 export const withResponsiveStyles = <P extends object>(Component: React.ComponentType<P>) => {
-  const ResponsiveComponent = React.forwardRef<HTMLElement, P & ResponsiveProps>(({ compact, className, ...props }, ref) => {
-    const combinedClassName = `${className || ''} ${compact ? 'compact' : ''}`.trim();
+  const ResponsiveComponent = React.forwardRef<HTMLElement, P & ResponsiveProps>(
+    ({ compact, className, ...props }, ref) => {
+      const combinedClassName = `${className || ''} ${compact ? 'compact' : ''}`.trim();
 
-    return <Component ref={ref} className={combinedClassName} {...(props as P)} />;
-  });
+      return <Component ref={ref} className={combinedClassName} {...(props as P)} />;
+    }
+  );
 
   ResponsiveComponent.displayName = `withResponsiveStyles(${Component.displayName || Component.name})`;
 
@@ -102,7 +104,6 @@ export const ProxyComponent = styled.div.withConfig({
 })<ProxyComponentProps>`
   ${responsiveFontSize()}
   ${responsiveGap()}
-  
 `;
 
 // Style component for common button patterns
@@ -130,11 +131,5 @@ export const StyledButton = styled.button<ResponsiveProps>`
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
     border-color: ${(props) => props.theme.colorPrimary};
-  }
-
-  &.compact {
-    ${responsiveFontSize('8px', '1.2vw', '12px')}
-    ${responsivePadding('4px 8px', '0.6vw 1.2vw', '6px 12px')}
-    min-height: 36px;
   }
 `;
