@@ -1,0 +1,204 @@
+.picklematch-transaction-list {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.picklematch-transaction-list-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.picklematch-transaction-list-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.picklematch-transaction-list-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.picklematch-transaction-count {
+  background-color: #f8f9fa;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.picklematch-transaction-summary {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.picklematch-balance {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.picklematch-balance.positive {
+  color: #28a745;
+}
+
+.picklematch-balance.negative {
+  color: #dc3545;
+}
+
+.picklematch-income {
+  color: #28a745;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.picklematch-expenses {
+  color: #dc3545;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.picklematch-transaction-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.picklematch-transaction-list-item {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+}
+
+.picklematch-transaction-list-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.picklematch-transaction-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.picklematch-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: picklematch-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes picklematch-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.picklematch-transaction-list-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.picklematch-show-more-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.picklematch-show-more-button:hover {
+  background-color: #0056b3;
+}
+
+.picklematch-show-more-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.picklematch-transaction-list-end {
+  display: flex;
+  justify-content: center;
+  padding: 32px 20px;
+  color: #999;
+  font-style: italic;
+}
+
+.picklematch-intersection-target {
+  height: 20px;
+  margin-top: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .picklematch-transaction-list {
+    padding: 16px;
+  }
+
+  .picklematch-transaction-list-stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .picklematch-transaction-summary {
+    gap: 12px;
+  }
+
+  .picklematch-transaction-list-title {
+    font-size: 24px;
+  }
+
+  .picklematch-balance,
+  .picklematch-income,
+  .picklematch-expenses {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .picklematch-transaction-list {
+    padding: 12px;
+  }
+
+  .picklematch-transaction-list-header {
+    margin-bottom: 16px;
+  }
+
+  .picklematch-transaction-list-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .picklematch-transaction-summary {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .picklematch-transaction-list-content {
+    gap: 8px;
+  }
+}

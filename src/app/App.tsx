@@ -1,20 +1,10 @@
 import React from 'react';
-import { styled, keyframes } from 'styled-components';
-import logo from './logo.svg';
+import { styled } from 'styled-components';
 import '../i18n/config';
 import { ThemeContextProvider } from '../styles/GlobalStyles';
-import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
+import { LanguageProvider } from '../contexts/LanguageContext';
 import { Header } from '../components/picklematch/header/Header';
-
-// Keyframe animations
-const logoSpin = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
+import { PickleMatchDemo } from '../components/picklematch';
 
 // Styled components
 const AppContainer = styled.div`
@@ -41,24 +31,12 @@ const AppMain = styled.main`
   }
 `;
 
-const AppLogo = styled.img`
-  height: 40vmin;
-  pointer-events: none;
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: ${logoSpin} infinite 20s linear;
-  }
-`;
-
 const AppContent: React.FC = () => {
-  const { t } = useLanguage();
-
   return (
     <AppContainer>
       <Header />
       <AppMain>
-        <AppLogo src={logo} alt="logo" />
-        <p>{t('app_text')}</p>
+        <PickleMatchDemo />
       </AppMain>
     </AppContainer>
   );
