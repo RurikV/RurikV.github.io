@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { Layout } from './Layout';
-import { ThemeProvider } from '../../../contexts/ThemeContext';
+import { ThemeContextProvider } from '../../../styles/GlobalStyles';
 import { LanguageProvider } from '../../../contexts/LanguageContext';
 import '../../../i18n/config';
 
@@ -14,11 +14,11 @@ const meta: Meta<typeof Layout> = {
   },
   decorators: [
     (Story) => (
-      <ThemeProvider>
+      <ThemeContextProvider>
         <LanguageProvider>
           <Story />
         </LanguageProvider>
-      </ThemeProvider>
+      </ThemeContextProvider>
     ),
   ],
   argTypes: {

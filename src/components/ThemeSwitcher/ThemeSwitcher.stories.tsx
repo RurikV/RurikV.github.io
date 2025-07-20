@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { ThemeSwitcher } from './ThemeSwitcher';
-import { ThemeProvider } from '../../contexts/ThemeContext';
+import { ThemeContextProvider } from '../../styles/GlobalStyles';
 
 const meta: Meta<typeof ThemeSwitcher> = {
   title: 'Homework/ThemeSwitcher',
@@ -11,9 +11,9 @@ const meta: Meta<typeof ThemeSwitcher> = {
   },
   decorators: [
     (Story) => (
-      <ThemeProvider>
+      <ThemeContextProvider>
         <Story />
-      </ThemeProvider>
+      </ThemeContextProvider>
     ),
   ],
   tags: ['autodocs'],

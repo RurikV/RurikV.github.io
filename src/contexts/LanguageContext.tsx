@@ -30,8 +30,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     i18n.changeLanguage(lang);
   };
 
+  // Normalize language code to handle cases like 'en-US' -> 'en'
+  const normalizeLanguage = (lang: string): Language => {
+    if (lang.startsWith('en')) return 'en';
+    if (lang.startsWith('ru')) return 'ru';
+    return 'en'; // fallback
+  };
+
   const value = {
-    language: i18n.language as Language,
+    language: normalizeLanguage(i18n.language),
     changeLanguage,
     t,
   };

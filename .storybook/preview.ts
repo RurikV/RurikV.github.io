@@ -1,8 +1,10 @@
 import type { Preview } from "@storybook/react";
-import '../src/styles/themes.scss';
+import React from 'react';
+import { ThemeContextProvider } from '../src/styles/GlobalStyles';
+import { LanguageProvider } from '../src/contexts/LanguageContext';
 import '../src/i18n/config';
 
-// Theme decorator to apply data-theme attribute based on global theme parameter
+// Theme decorator to wrap stories with ThemeContextProvider
 const withTheme = (Story, context) => {
   const theme = context.globals.theme || 'light';
   
@@ -13,7 +15,15 @@ const withTheme = (Story, context) => {
     document.body.classList.add(`theme-${theme}`);
   }
   
-  return Story();
+  return React.createElement(
+    ThemeContextProvider,
+    { initialTheme: theme },
+    React.createElement(
+      LanguageProvider,
+      {},
+      React.createElement(Story)
+    )
+  );
 };
 
 const preview: Preview = {
