@@ -14,16 +14,16 @@ export interface AddToCartButtonProps extends ResponsiveProps {
   // Controlled input props
   value?: number;
   onChange?: (value: number) => void;
-  
+
   // State hoisting props
   initialCount?: number;
   onCountChange?: (count: number) => void;
-  
+
   // Event handlers
   onAdd?: () => void;
   onIncrease?: () => void;
   onDecrease?: () => void;
-  
+
   // Customization props
   addText?: string;
   minValue?: number;
@@ -31,13 +31,14 @@ export interface AddToCartButtonProps extends ResponsiveProps {
   step?: number;
   disabled?: boolean;
   variant?: 'default' | 'compact' | 'minimal';
-  
+
   // Children patterns
   children?: React.ReactNode | ((props: AddToCartRenderProps) => React.ReactNode);
   renderButton?: (props: AddToCartRenderProps) => React.ReactNode;
   renderCounter?: (props: AddToCartRenderProps) => React.ReactNode;
-  
-  [key: string]: any;
+
+  // Additional props
+  count?: number;
 }
 
 // Render props interface
@@ -57,8 +58,7 @@ const AddToCartContainer = styled.div<ResponsiveProps & { variant?: string }>`
   display: inline-flex;
   align-items: center;
   ${responsiveGap('4px', '0.8vw', '8px')}
-  
-  
+
   ${(props) =>
     props.variant === 'minimal' &&
     `
@@ -73,23 +73,23 @@ const AddButton = styled(StyledButton)<ResponsiveProps & { variant?: string }>`
   border-radius: 8px;
   font-weight: 600;
   min-width: 120px;
-  
+
   background-color: ${(props) => props.theme.colorPrimary};
   color: white;
   border-color: ${(props) => props.theme.colorPrimary};
-  
+
   &:hover {
     background-color: ${(props) => props.theme.colorPrimary};
     opacity: 0.9;
     transform: translateY(-1px);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
-  
+
   ${(props) =>
     props.variant === 'compact' &&
     `
@@ -97,7 +97,7 @@ const AddButton = styled(StyledButton)<ResponsiveProps & { variant?: string }>`
     ${responsivePadding('6px 12px', '0.8vw 1.5vw', '8px 16px')}
     min-width: 100px;
   `}
-  
+
   ${(props) =>
     props.variant === 'minimal' &&
     `
@@ -119,14 +119,14 @@ const CounterContainer = styled.div<ResponsiveProps & { variant?: string }>`
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.colorBorder};
   background-color: ${(props) => props.theme.colorBgSecondary};
-  
+
   ${(props) =>
     props.variant === 'compact' &&
     `
     ${responsiveGap('2px', '0.6vw', '6px')}
     border-radius: 6px;
   `}
-  
+
   ${(props) =>
     props.variant === 'minimal' &&
     `
@@ -150,18 +150,17 @@ const CounterButton = styled.button<ResponsiveProps & { variant?: string }>`
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  
+
   &:hover {
     background-color: ${(props) => props.theme.colorBgTertiary};
     color: ${(props) => props.theme.colorPrimary};
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
-  
+
   ${(props) =>
     props.variant === 'compact' &&
     `
@@ -172,7 +171,6 @@ const CounterButton = styled.button<ResponsiveProps & { variant?: string }>`
   `}
 `;
 
-
 const CounterInput = styled.input<ResponsiveProps & { variant?: string }>`
   ${responsiveFontSize('16px', '1.6vw', '18px')}
   font-weight: 600;
@@ -182,12 +180,12 @@ const CounterInput = styled.input<ResponsiveProps & { variant?: string }>`
   text-align: center;
   width: 40px;
   outline: none;
-  
+
   &:focus {
     background-color: ${(props) => props.theme.colorBgTertiary};
     border-radius: 4px;
   }
-  
+
   ${(props) =>
     props.variant === 'compact' &&
     `
@@ -201,16 +199,16 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   // Controlled input props
   value,
   onChange,
-  
+
   // State hoisting props
   initialCount = 0,
   onCountChange,
-  
+
   // Event handlers
   onAdd,
   onIncrease,
   onDecrease,
-  
+
   // Customization props
   addText = 'Add to Cart',
   minValue = 0,
@@ -218,12 +216,12 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   step = 1,
   disabled = false,
   variant = 'default',
-  
+
   // Children patterns
   children,
   renderButton,
   renderCounter,
-  
+
   className,
   compact,
   ...restProps
@@ -232,44 +230,50 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   const isControlled = value !== undefined;
   const [internalCount, setInternalCount] = useState(initialCount);
   const currentCount = isControlled ? value : internalCount;
-  
+
   // Controlled input pattern
-  const handleCountChange = useCallback((newCount: number) => {
-    const clampedCount = Math.max(minValue, Math.min(maxValue, newCount));
-    
-    if (isControlled) {
-      onChange?.(clampedCount);
-    } else {
-      setInternalCount(clampedCount);
-    }
-    
-    onCountChange?.(clampedCount);
-  }, [isControlled, onChange, onCountChange, minValue, maxValue]);
-  
+  const handleCountChange = useCallback(
+    (newCount: number) => {
+      const clampedCount = Math.max(minValue, Math.min(maxValue, newCount));
+
+      if (isControlled) {
+        onChange?.(clampedCount);
+      } else {
+        setInternalCount(clampedCount);
+      }
+
+      onCountChange?.(clampedCount);
+    },
+    [isControlled, onChange, onCountChange, minValue, maxValue]
+  );
+
   const handleAdd = useCallback(() => {
     handleCountChange(step);
     onAdd?.();
   }, [handleCountChange, step, onAdd]);
-  
+
   const handleIncrease = useCallback(() => {
     handleCountChange(currentCount + step);
     onIncrease?.();
   }, [handleCountChange, currentCount, step, onIncrease]);
-  
+
   const handleDecrease = useCallback(() => {
     handleCountChange(currentCount - step);
     onDecrease?.();
   }, [handleCountChange, currentCount, step, onDecrease]);
-  
-  const handleInputChange = useCallback((newValue: number) => {
-    if (!isNaN(newValue)) {
-      handleCountChange(newValue);
-    }
-  }, [handleCountChange]);
-  
+
+  const handleInputChange = useCallback(
+    (newValue: number) => {
+      if (!isNaN(newValue)) {
+        handleCountChange(newValue);
+      }
+    },
+    [handleCountChange]
+  );
+
   const canDecrease = currentCount > minValue && !disabled;
   const canIncrease = currentCount < maxValue && !disabled;
-  
+
   const renderProps: AddToCartRenderProps = {
     count: currentCount,
     isControlled,
@@ -280,7 +284,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     handleDecrease,
     handleInputChange,
   };
-  
+
   // Render props pattern - if children is a function
   if (typeof children === 'function') {
     return (
@@ -289,7 +293,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       </AddToCartContainer>
     );
   }
-  
+
   // Custom render patterns
   if (renderButton && currentCount === 0) {
     return (
@@ -298,7 +302,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       </AddToCartContainer>
     );
   }
-  
+
   if (renderCounter && currentCount > 0) {
     return (
       <AddToCartContainer className={className} compact={compact} variant={variant} {...restProps}>
@@ -306,7 +310,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       </AddToCartContainer>
     );
   }
-  
+
   // Children pass-through pattern
   if (children) {
     return (
@@ -315,24 +319,18 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       </AddToCartContainer>
     );
   }
-  
+
   // Default rendering with conditional rendering pattern
   if (currentCount === 0) {
     return (
       <AddToCartContainer className={className} compact={compact} variant={variant} {...restProps}>
-        <AddButton
-          onClick={handleAdd}
-          disabled={disabled}
-          variant={variant}
-          compact={compact}
-          type="button"
-        >
+        <AddButton onClick={handleAdd} disabled={disabled} variant={variant} compact={compact} type="button">
           {addText}
         </AddButton>
       </AddToCartContainer>
     );
   }
-  
+
   return (
     <AddToCartContainer className={className} compact={compact} variant={variant} {...restProps}>
       <CounterContainer variant={variant} compact={compact}>
@@ -347,7 +345,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         >
           −
         </CounterButton>
-        
+
         <CounterInput
           type="number"
           value={currentCount}
@@ -360,7 +358,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           compact={compact}
           aria-label="Quantity"
         />
-        
+
         <CounterButton
           className="increase"
           onClick={handleIncrease}
@@ -397,11 +395,14 @@ export const ControlledAddToCartButton: React.FC<
   }
 > = ({ defaultValue = 0, onValueChange, ...props }) => {
   const [value, setValue] = useState(defaultValue);
-  
-  const handleChange = useCallback((newValue: number) => {
-    setValue(newValue);
-    onValueChange?.(newValue);
-  }, [onValueChange]);
-  
+
+  const handleChange = useCallback(
+    (newValue: number) => {
+      setValue(newValue);
+      onValueChange?.(newValue);
+    },
+    [onValueChange]
+  );
+
   return <AddToCartButton {...props} value={value} onChange={handleChange} />;
 };
