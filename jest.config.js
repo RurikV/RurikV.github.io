@@ -21,6 +21,6 @@ module.exports = {
   },
   modulePaths: ['src'],
   testRegex: '(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js|jsx)$',
-  testPathIgnorePatterns: ['\\.snap$', '<rootDir>/node_modules/'],
+  testPathIgnorePatterns: ['\\.snap$', '<rootDir>/node_modules/', '<rootDir>/react-tutorial/'],
   cacheDirectory: '.jest/cache',
 };
