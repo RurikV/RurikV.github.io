@@ -1,0 +1,515 @@
+/* Court Booking App Styles */
+.court-booking-app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Header */
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.app-header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Filters Section */
+.filters-section {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+}
+
+.filters-section h2 {
+  color: #2d3748;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.filter-select {
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  transition: border-color 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.price-slider,
+.rating-slider {
+  margin-top: 10px;
+}
+
+/* Courts Section */
+.courts-section {
+  margin-bottom: 40px;
+}
+
+.courts-section h2 {
+  color: #2d3748;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.courts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.court-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.court-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.court-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.court-info {
+  padding: 20px;
+}
+
+.court-info h3 {
+  color: #2d3748;
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.court-location {
+  color: #718096;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.court-games {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.game-tag {
+  background: #667eea;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.court-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.rating {
+  color: #f6ad55;
+  font-weight: 600;
+}
+
+.price {
+  color: #38a169;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.court-description {
+  margin-bottom: 15px;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.court-amenities {
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.court-amenities strong {
+  color: #4a5568;
+}
+
+.book-button {
+  width: 100%;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.book-button:hover {
+  background: #5a67d8;
+}
+
+/* Map Section */
+.map-section {
+  margin-bottom: 40px;
+}
+
+.map-section h2 {
+  color: #2d3748;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.map-placeholder {
+  background: #f7fafc;
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-info h3 {
+  color: #4a5568;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.map-info p {
+  color: #718096;
+  margin-bottom: 30px;
+}
+
+.location-markers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 600px;
+}
+
+.location-marker {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.location-marker strong {
+  color: #2d3748;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.location-marker p {
+  margin: 4px 0;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+/* FAQ Section */
+.faq-section {
+  margin-bottom: 40px;
+}
+
+.faq-section h2 {
+  color: #2d3748;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.faq-item {
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.faq-content {
+  width: 100%;
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.faq-question:hover {
+  background: #f7fafc;
+}
+
+.faq-answer {
+  padding: 0 20px 20px;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+/* Booking Modal */
+.booking-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.booking-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.booking-modal h3 {
+  color: #2d3748;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.booking-details p {
+  margin-bottom: 10px;
+  color: #4a5568;
+}
+
+.booking-details strong {
+  color: #2d3748;
+}
+
+.time-selection {
+  margin: 20px 0;
+}
+
+.time-selection h4 {
+  color: #2d3748;
+  margin-bottom: 15px;
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.time-slot {
+  background: #e2e8f0;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.time-slot:hover {
+  background: #cbd5e0;
+}
+
+.time-slot.selected {
+  background: #667eea;
+  color: white;
+}
+
+.full-description {
+  margin: 20px 0;
+}
+
+.full-description h4 {
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.confirm-booking-button {
+  flex: 1;
+  background: #38a169;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirm-booking-button:hover {
+  background: #2f855a;
+}
+
+.cancel-booking-button {
+  flex: 1;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-booking-button:hover {
+  background: #c53030;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .court-booking-app {
+    padding: 15px;
+  }
+
+  .app-header {
+    padding: 30px 15px;
+  }
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .app-header p {
+    font-size: 1rem;
+  }
+
+  .filters-section {
+    padding: 20px;
+  }
+
+  .filter-controls {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .courts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .court-card {
+    margin-bottom: 0;
+  }
+
+  .location-markers {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-modal {
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .booking-actions {
+    flex-direction: column;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .filters-section,
+  .court-info {
+    padding: 15px;
+  }
+
+  .court-games {
+    justify-content: center;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

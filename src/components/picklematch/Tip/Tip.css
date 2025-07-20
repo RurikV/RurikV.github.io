@@ -1,0 +1,46 @@
+.picklematch-tip {
+  position: absolute;
+  z-index: 1000;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+  max-width: 250px;
+  word-wrap: break-word;
+}
+
+.picklematch-tip-visible {
+  opacity: 1;
+}
+
+.picklematch-tip-top {
+  transform: translate(-50%, calc(-100% - 8px));
+}
+
+.picklematch-tip-bottom {
+  transform: translate(-50%, 8px);
+}
+
+/* Arrow styles */
+.picklematch-tip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+}
+
+.picklematch-tip-top::after {
+  top: 100%;
+  border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+.picklematch-tip-bottom::after {
+  bottom: 100%;
+  border-bottom-color: rgba(0, 0, 0, 0.8);
+}
