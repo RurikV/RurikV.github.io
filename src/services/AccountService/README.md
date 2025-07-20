@@ -147,7 +147,7 @@ console.log(result);
 npm test -- --testPathPattern="AccountService.test.ts"
 
 # Run demo script
-npx ts-node src/services/AccountService/demo.ts
+npx ts-node --compilerOptions '{"module":"commonjs"}' src/services/AccountService/demo.ts
 ```
 
 ## Architecture Benefits
