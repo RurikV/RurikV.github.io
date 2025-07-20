@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTheme } from '../../styles/GlobalStyles';
 import {
   responsiveFontSize,
@@ -105,12 +105,6 @@ const StyledThemeSwitcher = styled(StyledButton).withConfig({
     min-width: auto;
     aspect-ratio: 1;
   `}
-
-  &.compact {
-    ${responsiveFontSize('8px', '1.2vw', '12px')}
-    ${responsivePadding('2px 6px', '0.8vw 1.5vw', '4px 12px')}
-    min-height: 32px;
-  }
 `;
 
 const ThemeSwitcherIcon = styled.span<ResponsiveProps & { size?: string }>`
@@ -129,10 +123,6 @@ const ThemeSwitcherIcon = styled.span<ResponsiveProps & { size?: string }>`
     `
     ${responsiveFontSize('18px', '2vw', '20px')}
   `}
-
-  .compact & {
-    ${responsiveFontSize('10px', '1.4vw', '14px')}
-  }
 `;
 
 const ThemeSwitcherText = styled.span<ResponsiveProps & { size?: string }>`
@@ -152,17 +142,11 @@ const ThemeSwitcherText = styled.span<ResponsiveProps & { size?: string }>`
     ${responsiveFontSize('16px', '1.8vw', '18px')};
   `}
 
-  @media (max-width: 360px) {
-    display: none;
-  }
-
-  .compact & {
-    ${responsiveFontSize('8px', '1.2vw', '12px')};
-
+  ${css`
     @media (max-width: 360px) {
       display: none;
     }
-  }
+  `}
 `;
 
 // Enhanced component with conditional rendering patterns

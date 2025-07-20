@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import { useLanguage, Language } from '../../contexts/LanguageContext';
 import {
   responsiveFontSize,
@@ -44,11 +44,6 @@ const LanguageSwitcherContainer = styled(ProxyComponent).withConfig({
   ${responsiveGap('4px', '1vw', '8px')}
   ${responsiveFontSize('12px', '1.4vw', '14px')}
   white-space: nowrap;
-
-  &.compact {
-    ${responsiveFontSize('8px', '1.2vw', '12px')}
-    ${responsiveGap('2px', '0.8vw', '6px')}
-  }
 `;
 
 const LanguageSwitcherLabel = styled.label<ResponsiveProps>`
@@ -60,14 +55,6 @@ const LanguageSwitcherLabel = styled.label<ResponsiveProps>`
 
   @media (max-width: 360px) {
     display: none;
-  }
-
-  .compact & {
-    ${responsiveFontSize('8px', '1.2vw', '12px')};
-
-    @media (max-width: 360px) {
-      display: none;
-    }
   }
 `;
 
@@ -103,14 +90,6 @@ const LanguageSwitcherSelect = styled.select<ResponsiveProps>`
     background-color: ${(props) => props.theme.colorBgPrimary};
     color: ${(props) => props.theme.colorTextPrimary};
     ${responsiveFontSize('12px', '1.4vw', '14px')}
-  }
-
-  .compact & {
-    ${responsivePadding('2px 4px', '0.6vw 1.2vw', '4px 8px')}
-    ${responsiveFontSize('8px', '1.2vw', '12px')}
-    min-width: clamp(60px, 12vw, 100px);
-    max-width: clamp(100px, 16vw, 120px);
-    min-height: 36px;
   }
 `;
 

@@ -58,9 +58,6 @@ const AddToCartContainer = styled.div<ResponsiveProps & { variant?: string }>`
   align-items: center;
   ${responsiveGap('4px', '0.8vw', '8px')}
   
-  &.compact {
-    ${responsiveGap('2px', '0.6vw', '6px')}
-  }
   
   ${(props) =>
     props.variant === 'minimal' &&
@@ -164,13 +161,6 @@ const CounterButton = styled.button<ResponsiveProps & { variant?: string }>`
     cursor: not-allowed;
   }
   
-  &.decrease {
-    color: ${(props) => props.theme.colorDanger || '#dc3545'};
-  }
-  
-  &.increase {
-    color: ${(props) => props.theme.colorSuccess || '#28a745'};
-  }
   
   ${(props) =>
     props.variant === 'compact' &&
@@ -182,21 +172,6 @@ const CounterButton = styled.button<ResponsiveProps & { variant?: string }>`
   `}
 `;
 
-const CounterValue = styled.span<ResponsiveProps & { variant?: string }>`
-  ${responsiveFontSize('16px', '1.6vw', '18px')}
-  font-weight: 600;
-  color: ${(props) => props.theme.colorTextPrimary};
-  min-width: 32px;
-  text-align: center;
-  user-select: none;
-  
-  ${(props) =>
-    props.variant === 'compact' &&
-    `
-    ${responsiveFontSize('14px', '1.4vw', '16px')}
-    min-width: 28px;
-  `}
-`;
 
 const CounterInput = styled.input<ResponsiveProps & { variant?: string }>`
   ${responsiveFontSize('16px', '1.6vw', '18px')}

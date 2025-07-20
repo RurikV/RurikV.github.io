@@ -79,7 +79,7 @@ export interface ResponsiveProps {
 }
 
 export const withResponsiveStyles = <P extends object>(Component: React.ComponentType<P>) => {
-  const ResponsiveComponent = React.forwardRef<any, P & ResponsiveProps>(({ compact, className, ...props }, ref) => {
+  const ResponsiveComponent = React.forwardRef<HTMLElement, P & ResponsiveProps>(({ compact, className, ...props }, ref) => {
     const combinedClassName = `${className || ''} ${compact ? 'compact' : ''}`.trim();
 
     return <Component ref={ref} className={combinedClassName} {...(props as P)} />;
@@ -92,9 +92,9 @@ export const withResponsiveStyles = <P extends object>(Component: React.Componen
 
 // Proxy component for style composition
 export interface ProxyComponentProps extends ResponsiveProps {
-  as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
+  as?: keyof JSX.IntrinsicElements | React.ComponentType<unknown>;
   children?: React.ReactNode;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const ProxyComponent = styled.div.withConfig({
@@ -103,10 +103,6 @@ export const ProxyComponent = styled.div.withConfig({
   ${responsiveFontSize()}
   ${responsiveGap()}
   
-  &.compact {
-    ${responsiveFontSize('10px', '1.2vw', '12px')}
-    ${responsiveGap('4px', '0.8vw', '8px')}
-  }
 `;
 
 // Style component for common button patterns
