@@ -5,6 +5,7 @@ import '../i18n/config';
 import { ThemeContextProvider } from '../styles/GlobalStyles';
 import { LanguageProvider, useLanguage } from '../contexts/LanguageContext';
 import { Header } from '../components/picklematch/header/Header';
+import { PickleMatchDemo } from '../components/picklematch';
 
 // Keyframe animations
 const logoSpin = keyframes`
@@ -57,8 +58,7 @@ const AppContent: React.FC = () => {
     <AppContainer>
       <Header />
       <AppMain>
-        <AppLogo src={logo} alt="logo" />
-        <p>{t('app_text')}</p>
+        <PickleMatchDemo />
       </AppMain>
     </AppContainer>
   );

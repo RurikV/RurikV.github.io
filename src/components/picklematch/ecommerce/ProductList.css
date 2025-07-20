@@ -1,0 +1,160 @@
+.picklematch-product-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.picklematch-product-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.picklematch-product-list-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.picklematch-product-list-count {
+  background-color: #f8f9fa;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.picklematch-product-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.picklematch-product-list-item {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.picklematch-product-list-item:hover {
+  transform: translateY(-2px);
+}
+
+.picklematch-product-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.picklematch-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: picklematch-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes picklematch-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.picklematch-product-list-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.picklematch-show-more-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.picklematch-show-more-button:hover {
+  background-color: #0056b3;
+}
+
+.picklematch-show-more-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.picklematch-product-list-end {
+  display: flex;
+  justify-content: center;
+  padding: 32px 20px;
+  color: #999;
+  font-style: italic;
+}
+
+.picklematch-intersection-target {
+  height: 20px;
+  margin-top: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .picklematch-product-list {
+    padding: 16px;
+  }
+
+  .picklematch-product-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+
+  .picklematch-product-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .picklematch-product-list-title {
+    font-size: 24px;
+  }
+
+  .picklematch-product-list-count {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .picklematch-product-list {
+    padding: 12px;
+  }
+
+  .picklematch-product-list-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .picklematch-product-list-header {
+    margin-bottom: 16px;
+  }
+
+  .picklematch-product-list-title {
+    font-size: 20px;
+  }
+}
