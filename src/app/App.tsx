@@ -4,7 +4,7 @@ import '../i18n/config';
 import { ThemeContextProvider } from '../styles/GlobalStyles';
 import { LanguageProvider } from '../contexts/LanguageContext';
 import { Header } from '../components/picklematch/header/Header';
-import { PickleMatchDemo } from '../components/picklematch';
+import { CourtBookingApp } from '../components/picklematch/CourtBookingApp';
 
 // Styled components
 const AppContainer = styled.div`
@@ -36,7 +36,7 @@ const AppContent: React.FC = () => {
     <AppContainer>
       <Header />
       <AppMain>
-        <PickleMatchDemo />
+        <CourtBookingApp />
       </AppMain>
     </AppContainer>
   );
