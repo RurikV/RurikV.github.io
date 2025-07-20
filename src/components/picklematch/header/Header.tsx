@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import styled, { keyframes } from 'styled-components';
+import { styled, keyframes } from 'styled-components';
 import { HeaderProps } from '../types';
 import { Logo } from '../logo/Logo';
 import { ThemeSwitcher } from '../../ThemeSwitcher/ThemeSwitcher';
@@ -118,11 +118,10 @@ const HeaderNav = styled.nav`
   flex-shrink: 0;
 
   // Enhanced glassmorphism effect
-  background: rgba(255, 255, 255, 0.05);
   padding: 10px 20px;
   border-radius: 16px;
   backdrop-filter: blur(15px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid;
 
   background-color: ${(props) => props.theme.colorBgSecondary};
   border-color: ${(props) => props.theme.colorBorder};
@@ -133,7 +132,6 @@ const HeaderNav = styled.nav`
   // Enhanced hover effects with multiple transforms
   &:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: ${(props) => props.theme.shadowLg};
     backdrop-filter: blur(20px) saturate(180%);
 
     // Subtle glow effect on hover using box-shadow

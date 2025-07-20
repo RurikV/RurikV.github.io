@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { useLanguage, Language } from '../../contexts/LanguageContext';
 
 export interface LanguageSwitcherProps {

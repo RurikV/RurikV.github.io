@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { Modal } from '../picklematch/modal/Modal';
 import { useLanguage } from '../../contexts/LanguageContext';
 

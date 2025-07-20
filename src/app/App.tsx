@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import { styled, keyframes } from 'styled-components';
 import logo from './logo.svg';
 import '../i18n/config';
 import { ThemeContextProvider } from '../styles/GlobalStyles';
@@ -48,10 +48,6 @@ const AppLogo = styled.img`
   @media (prefers-reduced-motion: no-preference) {
     animation: ${logoSpin} infinite 20s linear;
   }
-`;
-
-const AppLink = styled.a`
-  color: #61dafb;
 `;
 
 const AppContent: React.FC = () => {

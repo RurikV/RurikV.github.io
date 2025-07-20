@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 
 interface ButtonProps {
   /**
@@ -49,7 +49,7 @@ const StyledButton = styled.button<{ primary?: boolean; size?: string; backgroun
       : css`
           color: #333;
           background-color: transparent;
-          box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;
+          box-shadow: rgba(0, 0, 0, 0.15) 0 0 0 1px inset;
         `}
 
   ${(props) => {
