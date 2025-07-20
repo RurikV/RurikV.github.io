@@ -1,112 +1,73 @@
 import React from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import { useLanguage, Language } from '../../contexts/LanguageContext';
+import {
+  responsiveFontSize,
+  responsiveGap,
+  responsivePadding,
+  withResponsiveStyles,
+  ProxyComponent,
+  ResponsiveProps,
+} from '../shared/ResponsiveStyles';
 
-export interface LanguageSwitcherProps {
-  className?: string;
+// Enhanced interface with destructuring props support
+export interface LanguageSwitcherProps extends ResponsiveProps {
+  showLabel?: boolean;
+  labelText?: string;
+  options?: Array<{ value: Language; label: string; flag: string }>;
+  onLanguageChange?: (language: Language) => void;
+  children?: React.ReactNode | ((props: LanguageSwitcherRenderProps) => React.ReactNode);
+  renderOption?: (option: { value: Language; label: string; flag: string }) => React.ReactNode;
+  [key: string]: any; // Allow additional props to be spread
 }
 
-const languageOptions: { value: Language; label: string; flag: string }[] = [
+// Render props interface
+export interface LanguageSwitcherRenderProps {
+  language: Language;
+  changeLanguage: (lang: Language) => void;
+  options: Array<{ value: Language; label: string; flag: string }>;
+  t: (key: string) => string;
+}
+
+const defaultLanguageOptions: { value: Language; label: string; flag: string }[] = [
   { value: 'en', label: 'English', flag: '🇺🇸' },
   { value: 'ru', label: 'Русский', flag: '🇷🇺' },
 ];
 
-// Styled components
-const LanguageSwitcherContainer = styled.div<{ className?: string }>`
+// Styled components using shared utilities
+const LanguageSwitcherContainer = styled(ProxyComponent).withConfig({
+  shouldForwardProp: (prop) =>
+    !['showLabel', 'labelText', 'options', 'onLanguageChange', 'renderOption'].includes(prop),
+})<LanguageSwitcherProps>`
   display: flex;
   align-items: center;
-  gap: clamp(4px, 1vw, 8px);
-  font-size: clamp(12px, 1.4vw, 14px);
+  ${responsiveGap('4px', '1vw', '8px')}
+  ${responsiveFontSize('12px', '1.4vw', '14px')}
   white-space: nowrap;
-
-  /* Responsive breakpoints matching Header component */
-  @media (max-width: 1024px) {
-    gap: clamp(3px, 0.9vw, 7px);
-    font-size: clamp(11px, 1.3vw, 13px);
-  }
-
-  @media (max-width: 768px) {
-    gap: clamp(2px, 0.8vw, 6px);
-    font-size: clamp(10px, 1.2vw, 12px);
-  }
-
-  @media (max-width: 640px) {
-    gap: clamp(2px, 0.7vw, 5px);
-    font-size: clamp(9px, 1.1vw, 11px);
-  }
-
-  @media (max-width: 480px) {
-    gap: clamp(1px, 0.6vw, 4px);
-    font-size: clamp(8px, 1vw, 10px);
-  }
-
-  @media (max-width: 360px) {
-    gap: clamp(1px, 0.5vw, 3px);
-    font-size: clamp(7px, 0.9vw, 9px);
-  }
-
-  /* Compact version for header - now works with responsive design */
-  &.language-switcher--compact {
-    font-size: clamp(8px, 1.2vw, 12px);
-    gap: clamp(2px, 0.8vw, 6px);
-
-    @media (max-width: 480px) {
-      font-size: clamp(7px, 0.9vw, 9px);
-      gap: clamp(1px, 0.5vw, 3px);
-    }
-  }
 `;
 
-const LanguageSwitcherLabel = styled.label`
+const LanguageSwitcherLabel = styled.label<ResponsiveProps>`
   font-weight: 500;
   white-space: nowrap;
   color: ${(props) => props.theme.colorTextPrimary};
-  font-size: clamp(12px, 1.4vw, 14px);
+  ${responsiveFontSize('12px', '1.4vw', '14px')}
   flex-shrink: 0;
 
-  @media (max-width: 1024px) {
-    font-size: clamp(11px, 1.3vw, 13px);
-  }
-
-  @media (max-width: 768px) {
-    font-size: clamp(10px, 1.2vw, 12px);
-  }
-
-  @media (max-width: 640px) {
-    font-size: clamp(9px, 1.1vw, 11px);
-  }
-
-  @media (max-width: 480px) {
-    font-size: clamp(8px, 1vw, 10px);
-  }
-
   @media (max-width: 360px) {
-    display: none; /* Hide label on very small screens to save space */
-  }
-
-  .language-switcher--compact & {
-    font-size: clamp(8px, 1.2vw, 12px);
-
-    @media (max-width: 480px) {
-      font-size: clamp(7px, 0.9vw, 9px);
-    }
-
-    @media (max-width: 360px) {
-      display: none; /* Hide label in compact mode on very small screens */
-    }
+    display: none;
   }
 `;
 
-const LanguageSwitcherSelect = styled.select`
-  padding: clamp(4px, 0.8vw, 6px) clamp(8px, 1.5vw, 12px);
+const LanguageSwitcherSelect = styled.select<ResponsiveProps>`
+  ${responsivePadding('4px 8px', '0.8vw 1.5vw', '6px 12px')}
   border-radius: 4px;
-  font-size: clamp(12px, 1.4vw, 14px);
+  ${responsiveFontSize('12px', '1.4vw', '14px')}
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: clamp(80px, 15vw, 120px);
   max-width: clamp(120px, 20vw, 160px);
   border: 1px solid;
-  min-height: 44px; /* Minimum touch target size for accessibility */
+  min-height: 44px;
   white-space: nowrap;
 
   background-color: ${(props) => props.theme.colorBgSecondary};
@@ -125,91 +86,98 @@ const LanguageSwitcherSelect = styled.select`
   }
 
   option {
-    padding: clamp(4px, 1vw, 8px);
+    ${responsivePadding('4px', '1vw', '8px')}
     background-color: ${(props) => props.theme.colorBgPrimary};
     color: ${(props) => props.theme.colorTextPrimary};
-    font-size: clamp(12px, 1.4vw, 14px);
-  }
-
-  /* Responsive breakpoints matching Header component */
-  @media (max-width: 1024px) {
-    padding: clamp(3px, 0.7vw, 5px) clamp(6px, 1.3vw, 10px);
-    font-size: clamp(11px, 1.3vw, 13px);
-    min-width: clamp(70px, 14vw, 110px);
-    max-width: clamp(110px, 18vw, 140px);
-    min-height: 40px;
-  }
-
-  @media (max-width: 768px) {
-    padding: clamp(2px, 0.6vw, 4px) clamp(4px, 1.2vw, 8px);
-    font-size: clamp(10px, 1.2vw, 12px);
-    min-width: clamp(60px, 12vw, 100px);
-    max-width: clamp(100px, 16vw, 120px);
-    min-height: 38px;
-  }
-
-  @media (max-width: 640px) {
-    padding: clamp(2px, 0.5vw, 3px) clamp(3px, 1vw, 6px);
-    font-size: clamp(9px, 1.1vw, 11px);
-    min-width: clamp(50px, 10vw, 90px);
-    max-width: clamp(90px, 14vw, 110px);
-    min-height: 36px;
-  }
-
-  @media (max-width: 480px) {
-    padding: clamp(1px, 0.4vw, 2px) clamp(2px, 0.8vw, 4px);
-    font-size: clamp(8px, 1vw, 10px);
-    min-width: clamp(40px, 8vw, 80px);
-    max-width: clamp(80px, 12vw, 100px);
-    min-height: 34px;
-  }
-
-  @media (max-width: 360px) {
-    padding: clamp(1px, 0.3vw, 2px) clamp(2px, 0.6vw, 3px);
-    font-size: clamp(7px, 0.9vw, 9px);
-    min-width: clamp(35px, 6vw, 70px);
-    max-width: clamp(70px, 10vw, 90px);
-    min-height: 32px;
-  }
-
-  /* Compact version for header - now works with responsive design */
-  .language-switcher--compact & {
-    padding: clamp(2px, 0.6vw, 4px) clamp(4px, 1.2vw, 8px);
-    font-size: clamp(8px, 1.2vw, 12px);
-    min-width: clamp(60px, 12vw, 100px);
-    max-width: clamp(100px, 16vw, 120px);
-
-    @media (max-width: 480px) {
-      padding: clamp(1px, 0.3vw, 2px) clamp(2px, 0.6vw, 3px);
-      font-size: clamp(7px, 0.9vw, 9px);
-      min-width: clamp(35px, 6vw, 70px);
-      max-width: clamp(70px, 10vw, 90px);
-    }
+    ${responsiveFontSize('12px', '1.4vw', '14px')}
   }
 `;
 
-export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className }) => {
+// Enhanced component with multiple React patterns
+export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
+  showLabel = true,
+  labelText,
+  options = defaultLanguageOptions,
+  onLanguageChange,
+  children,
+  renderOption,
+  className,
+  compact,
+  ...restProps // JSX spread attributes pattern
+}) => {
   const { language, changeLanguage, t } = useLanguage();
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    changeLanguage(event.target.value as Language);
+    const newLanguage = event.target.value as Language;
+    changeLanguage(newLanguage);
+    onLanguageChange?.(newLanguage); // Optional callback
   };
 
+  // Render props pattern - if children is a function
+  if (typeof children === 'function') {
+    return (
+      <LanguageSwitcherContainer className={className} compact={compact} {...restProps}>
+        {children({ language, changeLanguage, options, t })}
+      </LanguageSwitcherContainer>
+    );
+  }
+
+  // Array as children pattern
+  if (Array.isArray(children)) {
+    return (
+      <LanguageSwitcherContainer className={className} compact={compact} {...restProps}>
+        {children.map((child, index) => (
+          <React.Fragment key={index}>{child}</React.Fragment>
+        ))}
+      </LanguageSwitcherContainer>
+    );
+  }
+
+  // Children pass-through pattern
+  if (children) {
+    return (
+      <LanguageSwitcherContainer className={className} compact={compact} {...restProps}>
+        {children}
+      </LanguageSwitcherContainer>
+    );
+  }
+
+  // Default rendering with conditional rendering pattern
   return (
-    <LanguageSwitcherContainer className={className}>
-      <LanguageSwitcherLabel htmlFor="language-select">{t('language')}:</LanguageSwitcherLabel>
+    <LanguageSwitcherContainer className={className} compact={compact} {...restProps}>
+      {/* Conditional rendering for label */}
+      {showLabel && (
+        <LanguageSwitcherLabel htmlFor="language-select" compact={compact}>
+          {labelText || t('language')}:
+        </LanguageSwitcherLabel>
+      )}
+
       <LanguageSwitcherSelect
         id="language-select"
         value={language}
         onChange={handleLanguageChange}
         aria-label="Select language"
+        compact={compact}
       >
-        {languageOptions.map((option) => (
+        {options.map((option) => (
           <option key={option.value} value={option.value}>
-            {option.flag} {option.label}
+            {/* Custom render option pattern */}
+            {renderOption ? renderOption(option) : `${option.flag} ${option.label}`}
           </option>
         ))}
       </LanguageSwitcherSelect>
     </LanguageSwitcherContainer>
   );
 };
+
+// Higher-order component pattern
+export const ResponsiveLanguageSwitcher = withResponsiveStyles(LanguageSwitcher);
+
+// Style component pattern - pre-configured variants
+export const CompactLanguageSwitcher: React.FC<Omit<LanguageSwitcherProps, 'compact'>> = (props) => (
+  <LanguageSwitcher {...props} compact />
+);
+
+export const MinimalLanguageSwitcher: React.FC<Omit<LanguageSwitcherProps, 'showLabel'>> = (props) => (
+  <LanguageSwitcher {...props} showLabel={false} />
+);
