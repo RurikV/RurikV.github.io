@@ -1,10 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { styled, keyframes } from 'styled-components';
-import { HeaderProps } from '../types';
+import { HeaderProps, ProfileFormData, LoginFormData, RegisterFormData } from '../types';
 import { Logo } from '../logo/Logo';
 import { ThemeSwitcher } from '../../ThemeSwitcher/ThemeSwitcher';
 import { LanguageSwitcher } from '../../LanguageSwitcher/LanguageSwitcher';
 import { useLanguage } from '../../../contexts/LanguageContext';
+import { ProfileForm } from '../../../features/forms/ProfileForm';
+import { AuthForm } from '../../../features/forms/AuthForm';
 
 // Keyframe animations
 const shimmer = keyframes`
@@ -262,21 +264,155 @@ const HeaderLink = styled.a`
   }
 `;
 
+// Modal/Popup styled components
+const ModalOverlay = styled.div<{ isVisible: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: ${(props) => (props.isVisible ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: ${(props) => (props.isVisible ? 'fadeIn 0.3s ease-out' : 'none')};
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+const ModalContent = styled.div`
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease-out;
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: ${(props) => props.theme.colorBgPrimary || '#ffffff'};
+  color: ${(props) => props.theme.colorTextPrimary || '#2c3e50'};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 1001;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colorBgSecondary || '#f8f9fa'};
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
 export const Header: FC<HeaderProps> = ({ className }) => {
   const { t } = useLanguage();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  const handleProfileClick = () => {
+    setIsProfileModalOpen(true);
+  };
+
+  const handleAuthClick = () => {
+    setIsAuthModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsProfileModalOpen(false);
+    setIsAuthModalOpen(false);
+  };
+
+  const handleProfileSubmit = (values: ProfileFormData) => {
+    console.log('[DEBUG_LOG] Profile updated from header:', values);
+    // Close modal after successful submission
+    setIsProfileModalOpen(false);
+  };
+
+  const handleLoginSubmit = (values: LoginFormData) => {
+    console.log('[DEBUG_LOG] Login submitted from header:', values);
+    // Close modal after successful submission
+    setIsAuthModalOpen(false);
+  };
+
+  const handleRegisterSubmit = (values: RegisterFormData) => {
+    console.log('[DEBUG_LOG] Registration submitted from header:', values);
+    // Close modal after successful submission
+    setIsAuthModalOpen(false);
+  };
 
   return (
-    <StyledHeader className={className}>
-      <HeaderContainer>
-        <Logo />
-        <HeaderNav>
-          <HeaderLink href="javascript:void(0)">{t('courts')}</HeaderLink>
-          <HeaderLink href="javascript:void(0)">{t('booking')}</HeaderLink>
-          <HeaderLink href="javascript:void(0)">{t('profile')}</HeaderLink>
-          <LanguageSwitcher className="language-switcher--compact" />
-          <ThemeSwitcher className="theme-switcher--compact" />
-        </HeaderNav>
-      </HeaderContainer>
-    </StyledHeader>
+    <>
+      <StyledHeader className={className}>
+        <HeaderContainer>
+          <Logo />
+          <HeaderNav>
+            <HeaderLink href="javascript:void(0)">{t('courts')}</HeaderLink>
+            <HeaderLink href="javascript:void(0)">{t('booking')}</HeaderLink>
+            <HeaderLink href="javascript:void(0)" onClick={handleProfileClick}>
+              {t('profile')}
+            </HeaderLink>
+            <HeaderLink href="javascript:void(0)" onClick={handleAuthClick}>
+              {t('login')}
+            </HeaderLink>
+            <LanguageSwitcher className="language-switcher--compact" />
+            <ThemeSwitcher className="theme-switcher--compact" />
+          </HeaderNav>
+        </HeaderContainer>
+      </StyledHeader>
+
+      {/* Profile Form Modal */}
+      <ModalOverlay isVisible={isProfileModalOpen} onClick={handleCloseModal}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <CloseButton onClick={handleCloseModal} aria-label="Close profile form">
+            ×
+          </CloseButton>
+          <ProfileForm onSubmit={handleProfileSubmit} initialValues={{ name: '', about: '' }} />
+        </ModalContent>
+      </ModalOverlay>
+
+      {/* Auth Form Modal */}
+      <ModalOverlay isVisible={isAuthModalOpen} onClick={handleCloseModal}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <CloseButton onClick={handleCloseModal} aria-label="Close auth form">
+            ×
+          </CloseButton>
+          <AuthForm mode="login" onLoginSubmit={handleLoginSubmit} onRegisterSubmit={handleRegisterSubmit} />
+        </ModalContent>
+      </ModalOverlay>
+    </>
   );
 };
