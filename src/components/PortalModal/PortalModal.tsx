@@ -69,13 +69,13 @@ export const PortalModal: React.FC<PortalModalProps> = ({ visible, children, onC
   useEffect(() => {
     // Create modal root element if it doesn't exist
     let existingModalRoot = document.getElementById('modal-root') as HTMLDivElement;
-    
+
     if (!existingModalRoot) {
       existingModalRoot = document.createElement('div');
       existingModalRoot.id = 'modal-root';
       document.body.appendChild(existingModalRoot);
     }
-    
+
     modalRoot.current = existingModalRoot;
 
     // Cleanup function to remove modal root if no modals are using it

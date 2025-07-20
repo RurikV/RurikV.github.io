@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { Operation } from '../../homeworks/ts1/3_write';
+import type { Operation } from '../../homeworks/ts1/3_write';
 
 export interface OperationItemProps {
   operation: Operation;

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { styled } from 'styled-components';
-import { Product, Operation, createRandomProduct, createRandomOperation } from '../../homeworks/ts1/3_write';
+import type { Product, Operation } from '../../homeworks/ts1/3_write';
+import { createRandomProduct, createRandomOperation } from '../../homeworks/ts1/3_write';
 import { ProductItem } from '../ProductItem/ProductItem';
 import { OperationItem } from '../OperationItem/OperationItem';
 
@@ -106,7 +107,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
   const [operations, setOperations] = useState<Operation[]>(initialOperations);
   const [viewMode, setViewMode] = useState<ViewMode>('both');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const loadingRef = useRef<HTMLDivElement>(null);
 
   const generateNewItems = useCallback(() => {
@@ -123,16 +124,16 @@ export const ItemsList: React.FC<ItemsListProps> = ({
       }
     }
 
-    setProducts(prev => [...prev, ...newProducts]);
-    setOperations(prev => [...prev, ...newOperations]);
+    setProducts((prev) => [...prev, ...newProducts]);
+    setOperations((prev) => [...prev, ...newOperations]);
   }, [viewMode, itemsPerLoad]);
 
   const handleLoadMore = useCallback(async () => {
     if (isLoading) return;
-    
+
     setIsLoading(true);
     // Simulate loading delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     generateNewItems();
     setIsLoading(false);
   }, [isLoading, generateNewItems]);
@@ -163,13 +164,13 @@ export const ItemsList: React.FC<ItemsListProps> = ({
     const items: Array<{ type: 'product' | 'operation'; data: Product | Operation; key: string }> = [];
 
     if (viewMode === 'products' || viewMode === 'both') {
-      products.forEach(product => {
+      products.forEach((product) => {
         items.push({ type: 'product', data: product, key: `product-${product.id}` });
       });
     }
 
     if (viewMode === 'operations' || viewMode === 'both') {
-      operations.forEach(operation => {
+      operations.forEach((operation) => {
         items.push({ type: 'operation', data: operation, key: `operation-${operation.id}` });
       });
     }
@@ -181,7 +182,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
       return dateB - dateA;
     });
 
-    return items.map(item => {
+    return items.map((item) => {
       const handleClick = () => {
         if (onItemClick) {
           onItemClick(item.type, item.data);
@@ -213,9 +214,7 @@ export const ItemsList: React.FC<ItemsListProps> = ({
         </ItemsListToggle>
       </ItemsListHeader>
 
-      <ItemsContainer>
-        {renderItems()}
-      </ItemsContainer>
+      <ItemsContainer>{renderItems()}</ItemsContainer>
 
       {useIntersectionObserver ? (
         <LoadingIndicator ref={loadingRef}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
-import { Product, Operation, createRandomProduct, createRandomOperation } from '../../homeworks/ts1/3_write';
+import type { Product, Operation } from '../../homeworks/ts1/3_write';
+import { createRandomProduct, createRandomOperation } from '../../homeworks/ts1/3_write';
 import { ItemsList } from '../ItemsList/ItemsList';
 import { PortalModal } from '../PortalModal/PortalModal';
 import { ProductItem } from '../ProductItem/ProductItem';
@@ -78,20 +79,19 @@ const ModalTitle = styled.h2`
 `;
 
 const ClickableItemsList = styled(ItemsList)`
-  .product-item,
-  .operation-item {
-    cursor: pointer;
-    transition: transform 0.2s ease;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
 `;
 
 export const HomeworkDemo: React.FC<HomeworkDemoProps> = ({ className }) => {
-  const [selectedItem, setSelectedItem] = useState<{ type: 'product' | 'operation'; data: Product | Operation } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<{ type: 'product' | 'operation'; data: Product | Operation } | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialProducts, setInitialProducts] = useState<Product[]>([]);
   const [initialOperations, setInitialOperations] = useState<Operation[]>([]);
@@ -138,22 +138,16 @@ export const HomeworkDemo: React.FC<HomeworkDemoProps> = ({ className }) => {
       <HomeworkDemoHeader>
         <HomeworkDemoTitle>Homework Demo</HomeworkDemoTitle>
         <HomeworkDemoDescription>
-          This demo showcases a dynamic list of products and operations with modal functionality.
-          The list supports both "Show more" button and IntersectionObserver for infinite scrolling.
-          Click on any item to view it in a modal window that uses React portals.
+          This demo showcases a dynamic list of products and operations with modal functionality. The list supports both
+          &quot;Show more&quot; button and IntersectionObserver for infinite scrolling. Click on any item to view it in
+          a modal window that uses React portals.
         </HomeworkDemoDescription>
       </HomeworkDemoHeader>
 
       <DemoControls>
-        <DemoButton onClick={generateInitialData}>
-          Generate Initial Data
-        </DemoButton>
-        <DemoButton onClick={showProductModal}>
-          Show Product Modal
-        </DemoButton>
-        <DemoButton onClick={showOperationModal}>
-          Show Operation Modal
-        </DemoButton>
+        <DemoButton onClick={generateInitialData}>Generate Initial Data</DemoButton>
+        <DemoButton onClick={showProductModal}>Show Product Modal</DemoButton>
+        <DemoButton onClick={showOperationModal}>Show Operation Modal</DemoButton>
       </DemoControls>
 
       <ClickableItemsList
@@ -168,9 +162,7 @@ export const HomeworkDemo: React.FC<HomeworkDemoProps> = ({ className }) => {
         <ModalContent>
           {selectedItem && (
             <>
-              <ModalTitle>
-                {selectedItem.type === 'product' ? 'Product Details' : 'Operation Details'}
-              </ModalTitle>
+              <ModalTitle>{selectedItem.type === 'product' ? 'Product Details' : 'Operation Details'}</ModalTitle>
               {selectedItem.type === 'product' ? (
                 <ProductItem product={selectedItem.data as Product} />
               ) : (

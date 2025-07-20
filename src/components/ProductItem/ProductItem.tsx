@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { Product } from '../../homeworks/ts1/3_write';
+import type { Product } from '../../homeworks/ts1/3_write';
 
 export interface ProductItemProps {
   product: Product;
