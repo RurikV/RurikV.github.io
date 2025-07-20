@@ -1,0 +1,61 @@
+.picklematch-slider-range {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.picklematch-slider-range-field {
+  position: relative;
+  flex: 1;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.picklematch-slider-range-track {
+  width: 100%;
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+}
+
+.picklematch-slider-range-runner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: #007bff;
+  border: 2px solid white;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  cursor: grab;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.2s ease;
+}
+
+.picklematch-slider-range-runner:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.picklematch-slider-range-runner:active {
+  cursor: grabbing;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .picklematch-slider-range {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .picklematch-slider-range-field {
+    height: 24px;
+  }
+  
+  .picklematch-slider-range-runner {
+    width: 20px;
+    height: 20px;
+  }
+}

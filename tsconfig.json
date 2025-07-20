@@ -19,6 +19,14 @@
 	  "moduleResolution": "node",
 	  "resolveJsonModule": true,
 	  "jsx": "react-jsx"
-	}
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"spirit-drive.github.io/**/*",
+		"node_modules",
+		"dist"
+	]
 }
   

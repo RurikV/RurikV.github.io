@@ -1,0 +1,12 @@
+.picklematch-collapse {
+  overflow: hidden;
+}
+
+.picklematch-collapse-wrapper {
+  transform: translateY(-150%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.picklematch-collapse-wrapper-opened {
+  transform: translateY(0);
+}
