@@ -1,6 +1,6 @@
 import { AccountService } from './AccountService';
 import { MockDiscountDatabase } from './MockDiscountDatabase';
-import { UserType, ProductType, User, Product, DiscountResult } from './types';
+import { UserType, ProductType, User, Product } from './types';
 
 describe('AccountService', () => {
   let accountService: AccountService;

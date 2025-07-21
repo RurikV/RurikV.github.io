@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { useLanguage, Language } from '../../contexts/LanguageContext';
 import {
   responsiveFontSize,
@@ -18,7 +18,6 @@ export interface LanguageSwitcherProps extends ResponsiveProps {
   onLanguageChange?: (language: Language) => void;
   children?: React.ReactNode | ((props: LanguageSwitcherRenderProps) => React.ReactNode);
   renderOption?: (option: { value: Language; label: string; flag: string }) => React.ReactNode;
-  [key: string]: any; // Allow additional props to be spread
 }
 
 // Render props interface

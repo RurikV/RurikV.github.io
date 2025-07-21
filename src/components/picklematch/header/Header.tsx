@@ -419,10 +419,6 @@ export const Header: FC<HeaderProps> = ({ className }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  const handleProfileClick = () => {
-    setIsProfileModalOpen(true);
-  };
-
   const handleAuthClick = () => {
     setIsAuthModalOpen(true);
   };

@@ -29,7 +29,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Interactive wrapper component for stories
-const InteractiveSlider = ({ min = 0, max = 100, initialValue = 50, ...props }: any) => {
+interface InteractiveSliderProps {
+  min?: number;
+  max?: number;
+  initialValue?: number;
+  className?: string;
+}
+
+const InteractiveSlider = ({ min = 0, max = 100, initialValue = 50, ...props }: InteractiveSliderProps) => {
   const [value, setValue] = useState(initialValue);
 
   return (

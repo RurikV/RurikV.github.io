@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 import { useTheme } from '../../styles/GlobalStyles';
 import {
   responsiveFontSize,
@@ -21,7 +21,6 @@ export interface ThemeSwitcherProps extends ResponsiveProps {
   onThemeChange?: (theme: 'light' | 'dark') => void;
   children?: React.ReactNode | ((props: ThemeSwitcherRenderProps) => React.ReactNode);
   renderContent?: (props: ThemeSwitcherRenderProps) => React.ReactNode;
-  [key: string]: any;
 }
 
 // Render props interface

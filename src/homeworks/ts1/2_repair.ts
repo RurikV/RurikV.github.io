@@ -33,7 +33,7 @@ export type Percent = {
 export type Data = Money | Percent;
 
 // Здесь, возможно, нужно использовать as, возможно в switch передавать немного по-другому
-const getDataAmount = (data: Data): number => {
+export const getDataAmount = (data: Data): number => {
   switch (data.type) {
     case 'Money':
       return data.amount;
