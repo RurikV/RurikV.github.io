@@ -5,6 +5,7 @@ import { Header } from '../components/picklematch/header/Header';
 import ProfilePage from '../pages/ProfilePage';
 import CourtsPage from '../pages/CourtsPage';
 import CartPage from '../pages/CartPage';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -33,7 +34,14 @@ const AppRouter: React.FC = () => {
         <AppMain>
           <Routes>
             <Route path="/" element={<Navigate to="/courts" replace />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/courts" element={<CourtsPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="*" element={<Navigate to="/courts" replace />} />
