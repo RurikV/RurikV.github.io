@@ -10,8 +10,8 @@ export const addPlus = (string: string): string => `+${string}`;
 export const removeFirstZeros = (value: string): string => value.replace(/^(-)?[0]+(-?\d+.*)$/, '$1$2');
 
 // Number formatting functions
-export const getBeautifulNumber = (value: number | string | null | undefined, separator = ' '): string | undefined =>
-  value?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+export const getBeautifulNumber = (value: number | string, separator = ' '): string =>
+  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 
 export const round = (value: number, accuracy = 2): number => {
   const d = 10 ** accuracy;
@@ -48,7 +48,7 @@ export const getContrastType = (contrastValue: number): 'black' | 'white' => (co
 export const shortColorRegExp = /^#[0-9a-f]{3}$/i;
 export const longColorRegExp = /^#[0-9a-f]{6}$/i;
 
-export const checkColor = (color: string): void => {
+export const checkColor = (color: string): never | void => {
   if (!longColorRegExp.test(color) && !shortColorRegExp.test(color)) throw new Error(`invalid hex color: ${color}`);
 };
 
