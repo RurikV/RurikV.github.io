@@ -7,6 +7,7 @@ import CourtsPage from '../pages/CourtsPage';
 import CartPage from '../pages/CartPage';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { RegistrationDemo } from '../pages/RegistrationDemo';
+import { GraphQLDemo } from '../pages/GraphQLDemo';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -46,6 +47,7 @@ const AppRouter: React.FC = () => {
             <Route path="/courts" element={<CourtsPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/registration_demo" element={<RegistrationDemo />} />
+            <Route path="/graphql_demo" element={<GraphQLDemo />} />
             <Route path="*" element={<Navigate to="/courts" replace />} />
           </Routes>
         </AppMain>
