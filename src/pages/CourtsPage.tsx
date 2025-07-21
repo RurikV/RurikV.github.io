@@ -6,6 +6,8 @@ import { Collapse } from '../components/picklematch/Collapse';
 import { Tip } from '../components/picklematch/Tip';
 import { CroppedText } from '../components/picklematch/CroppedText';
 import { SliderRange } from '../components/picklematch/SliderRange';
+import { useAppSelector } from '../store/hooks';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -120,6 +122,52 @@ const BookButton = styled.button`
 
   &:hover {
     opacity: 0.9;
+  }
+`;
+
+const AdminSection = styled.div`
+  background: ${(props) => props.theme.colorBgSecondary};
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  border: 2px solid #28a745;
+`;
+
+const AdminButtons = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+const AdminButton = styled.button`
+  padding: 10px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #218838;
+  }
+`;
+
+const EditButton = styled.button`
+  padding: 6px 12px;
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #e0a800;
   }
 `;
 
@@ -246,6 +294,14 @@ const CourtsPage: FC = () => {
   const [ratingFilter, setRatingFilter] = useState<number>(0);
   const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
+  const [adminModalType, setAdminModalType] = useState<'add-court' | 'edit-court' | 'add-location' | 'add-game' | null>(
+    null
+  );
+
+  // Get current user's admin status
+  const { profile } = useAppSelector((state) => state.auth);
+  const isAdmin = profile?.role === 'admin';
 
   // Check if modal should be open based on URL
   React.useEffect(() => {
@@ -290,9 +346,39 @@ const CourtsPage: FC = () => {
     }
   };
 
+  // Admin functionality handlers
+  const handleOpenAdminModal = (type: 'add-court' | 'edit-court' | 'add-location' | 'add-game') => {
+    setAdminModalType(type);
+    setShowAdminModal(true);
+  };
+
+  const handleCloseAdminModal = () => {
+    setShowAdminModal(false);
+    setAdminModalType(null);
+  };
+
+  const handleAdminAction = () => {
+    console.log('[DEBUG_LOG] Admin action:', adminModalType);
+    alert(`Admin action: ${adminModalType} - This would save to backend`);
+    handleCloseAdminModal();
+  };
+
   return (
     <PageContainer>
       <PageTitle>Courts & Booking</PageTitle>
+
+      {/* Admin Section - Only visible to admins */}
+      {isAdmin && (
+        <AdminSection>
+          <h2>🔧 Admin Panel</h2>
+          <p>Manage courts, locations, and games</p>
+          <AdminButtons>
+            <AdminButton onClick={() => handleOpenAdminModal('add-court')}>Add New Court</AdminButton>
+            <AdminButton onClick={() => handleOpenAdminModal('add-location')}>Add New Location</AdminButton>
+            <AdminButton onClick={() => handleOpenAdminModal('add-game')}>Add New Game Type</AdminButton>
+          </AdminButtons>
+        </AdminSection>
+      )}
 
       <FiltersSection>
         <h2>Find Your Perfect Court</h2>
@@ -350,7 +436,10 @@ const CourtsPage: FC = () => {
             <CourtCard key={court.id}>
               <CourtImage src={court.image} alt={court.name} />
               <CourtInfo>
-                <CourtName>{court.name}</CourtName>
+                <CourtName>
+                  {court.name}
+                  {isAdmin && <EditButton onClick={() => handleOpenAdminModal('edit-court')}>Edit Court</EditButton>}
+                </CourtName>
                 <CourtLocation>{court.location}</CourtLocation>
                 <GameTags>
                   {court.games.map((game) => (
@@ -417,6 +506,56 @@ const CourtsPage: FC = () => {
               </ModalActions>
             </>
           )}
+        </ModalContent>
+      </ModalOverlay>
+
+      {/* Admin Modal - Only accessible to admins */}
+      <ModalOverlay isVisible={showAdminModal} onClick={handleCloseAdminModal}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalTitle>
+            {adminModalType === 'add-court' && '🏟️ Add New Court'}
+            {adminModalType === 'edit-court' && '✏️ Edit Court'}
+            {adminModalType === 'add-location' && '📍 Add New Location'}
+            {adminModalType === 'add-game' && '🎮 Add New Game Type'}
+          </ModalTitle>
+          <p>
+            {adminModalType === 'add-court' && 'Create a new court with all necessary details.'}
+            {adminModalType === 'edit-court' && 'Modify the selected court information.'}
+            {adminModalType === 'add-location' && 'Add a new location where courts can be placed.'}
+            {adminModalType === 'add-game' && 'Add a new game type that can be played on courts.'}
+          </p>
+          <p style={{ color: '#666', fontSize: '14px', marginTop: '16px' }}>
+            This is a demo modal. In a real application, this would contain forms to manage courts, locations, and
+            games.
+          </p>
+          <ModalActions>
+            <button
+              onClick={handleCloseAdminModal}
+              style={{
+                padding: '10px 20px',
+                background: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAdminAction}
+              style={{
+                padding: '10px 20px',
+                background: '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+              }}
+            >
+              Save Changes
+            </button>
+          </ModalActions>
         </ModalContent>
       </ModalOverlay>
     </PageContainer>

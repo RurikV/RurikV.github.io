@@ -9,7 +9,7 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { ProfileForm } from '../../../features/forms/ProfileForm';
 import { AuthForm } from '../../../features/forms/AuthForm';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { login, logout } from '../../../store/slices/authSlice';
+import { login, logout, updateProfile } from '../../../store/slices/authSlice';
 
 // Keyframe animations
 const shimmer = keyframes`
@@ -444,6 +444,7 @@ export const Header: FC<HeaderProps> = ({ className }) => {
 
   const handleProfileSubmit = (values: ProfileFormData) => {
     console.log('[DEBUG_LOG] Profile updated from header:', values);
+    dispatch(updateProfile(values));
     // Close modal after successful submission
     setIsProfileModalOpen(false);
   };
@@ -501,7 +502,14 @@ export const Header: FC<HeaderProps> = ({ className }) => {
           <CloseButton onClick={handleCloseModal} aria-label="Close profile form">
             ×
           </CloseButton>
-          <ProfileForm onSubmit={handleProfileSubmit} initialValues={{ name: '', about: '' }} />
+          <ProfileForm
+            onSubmit={handleProfileSubmit}
+            initialValues={{
+              name: profile?.name || '',
+              about: profile?.about || 'Tell us about yourself',
+              isAdmin: profile?.role === 'admin',
+            }}
+          />
         </ModalContent>
       </ModalOverlay>
 

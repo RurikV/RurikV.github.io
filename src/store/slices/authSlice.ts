@@ -7,6 +7,7 @@ export interface Profile {
   email: string;
   role: 'user' | 'admin';
   avatar?: string;
+  about?: string;
 }
 
 interface AuthState {
@@ -48,6 +49,9 @@ const generateFakeProfile = (token: string): Profile => {
     email: isAdmin ? 'admin@picklematch.com' : 'user@picklematch.com',
     role: isAdmin ? 'admin' : 'user',
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${hash}`,
+    about: isAdmin
+      ? 'Administrator with full access to manage courts and games.'
+      : 'Regular user who can book courts and play games.',
   };
 };
 
@@ -92,8 +96,15 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       }
     },
+    updateProfile: (state, action: PayloadAction<{ name: string; about: string; isAdmin: boolean }>) => {
+      if (state.profile) {
+        state.profile.name = action.payload.name;
+        state.profile.about = action.payload.about;
+        state.profile.role = action.payload.isAdmin ? 'admin' : 'user';
+      }
+    },
   },
 });
 
-export const { login, logout, syncTokenFromStorage } = authSlice.actions;
+export const { login, logout, syncTokenFromStorage, updateProfile } = authSlice.actions;
 export default authSlice.reducer;
