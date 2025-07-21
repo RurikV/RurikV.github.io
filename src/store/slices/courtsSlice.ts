@@ -51,13 +51,13 @@ const courtsSlice = createSlice({
       state.courts.push(action.payload);
     },
     updateCourt: (state, action: PayloadAction<Court>) => {
-      const index = state.courts.findIndex(court => court.id === action.payload.id);
+      const index = state.courts.findIndex((court) => court.id === action.payload.id);
       if (index !== -1) {
         state.courts[index] = action.payload;
       }
     },
     removeCourt: (state, action: PayloadAction<string>) => {
-      state.courts = state.courts.filter(court => court.id !== action.payload);
+      state.courts = state.courts.filter((court) => court.id !== action.payload);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -79,15 +79,7 @@ const courtsSlice = createSlice({
   },
 });
 
-export const {
-  setCourts,
-  addCourt,
-  updateCourt,
-  removeCourt,
-  setLoading,
-  setError,
-  setFilters,
-  clearFilters,
-} = courtsSlice.actions;
+export const { setCourts, addCourt, updateCourt, removeCourt, setLoading, setError, setFilters, clearFilters } =
+  courtsSlice.actions;
 
 export default courtsSlice.reducer;

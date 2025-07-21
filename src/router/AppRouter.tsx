@@ -34,13 +34,13 @@ const AppRouter: React.FC = () => {
         <AppMain>
           <Routes>
             <Route path="/" element={<Navigate to="/courts" replace />} />
-            <Route 
-              path="/profile" 
+            <Route
+              path="/profile"
               element={
                 <ProtectedRoute requireAuth={true}>
                   <ProfilePage />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route path="/courts" element={<CourtsPage />} />
             <Route path="/cart" element={<CartPage />} />

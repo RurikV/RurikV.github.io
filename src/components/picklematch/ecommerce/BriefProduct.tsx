@@ -8,9 +8,9 @@ import './BriefProduct.css';
 export const BriefProduct: FC<BriefProductProps> = ({ product }) => {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
-  
+
   // Get current cart count for this product
-  const cartItem = cartItems.find(item => item.id === product.id);
+  const cartItem = cartItems.find((item: any) => item.id === product.id);
   const cartCount = cartItem ? cartItem.quantity : 0;
   const { price, image, title, description } = product;
 
@@ -24,13 +24,15 @@ export const BriefProduct: FC<BriefProductProps> = ({ product }) => {
   };
 
   const handleAddToCart = () => {
-    dispatch(addToCart({
-      id: product.id,
-      name: product.title,
-      price: product.price,
-      image: product.image,
-      description: product.description,
-    }));
+    dispatch(
+      addToCart({
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        image: product.image,
+        description: product.description,
+      })
+    );
   };
 
   const handleUpdateQuantity = (newQuantity: number) => {
@@ -66,11 +68,7 @@ export const BriefProduct: FC<BriefProductProps> = ({ product }) => {
         <p className="picklematch-brief-product-description">{truncateDescription(description)}</p>
 
         <div className="picklematch-brief-product-actions">
-          <AddToCartButton 
-            value={cartCount}
-            onChange={handleUpdateQuantity}
-            onAdd={handleAddToCart}
-          />
+          <AddToCartButton value={cartCount} onChange={handleUpdateQuantity} onAdd={handleAddToCart} />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import courtsReducer from './slices/courtsSlice';
 // Middleware for localStorage synchronization between tabs
 const localStorageSyncMiddleware = (store: any) => (next: any) => (action: any) => {
   const result = next(action);
-  
+
   // Listen for storage events to sync token between tabs
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
@@ -16,7 +16,7 @@ const localStorageSyncMiddleware = (store: any) => (next: any) => (action: any) 
       }
     });
   }
-  
+
   return result;
 };
 

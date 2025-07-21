@@ -421,7 +421,7 @@ export const Header: FC<HeaderProps> = ({ className }) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, profile } = useAppSelector((state) => state.auth);
   const { totalItems } = useAppSelector((state) => state.cart);
-  
+
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -473,9 +473,7 @@ export const Header: FC<HeaderProps> = ({ className }) => {
           <Logo />
           <HeaderNav>
             <HeaderNavLink to="/courts">{t('courts')}</HeaderNavLink>
-            <HeaderNavLink to="/cart">
-              Cart {totalItems > 0 && `(${totalItems})`}
-            </HeaderNavLink>
+            <HeaderNavLink to="/cart">Cart {totalItems > 0 && `(${totalItems})`}</HeaderNavLink>
             <HeaderNavLink to="/profile">{t('profile')}</HeaderNavLink>
             {isAuthenticated && profile ? (
               <>

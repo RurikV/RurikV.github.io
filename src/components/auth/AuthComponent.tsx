@@ -69,13 +69,13 @@ const AuthComponent: React.FC = () => {
 
   const handleLogin = async () => {
     setIsLoading(true);
-    
+
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 500));
-    
+
     const fakeToken = generateFakeToken();
     dispatch(login(fakeToken));
-    
+
     setIsLoading(false);
   };
 

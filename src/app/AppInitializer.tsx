@@ -16,7 +16,7 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
     if (!isInitialized) {
       // Sync token from localStorage on app start
       dispatch(syncTokenFromStorage());
-      
+
       // Mark app as initialized
       dispatch(initializeApp());
     }
