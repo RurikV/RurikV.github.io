@@ -3,6 +3,8 @@ import authReducer, { syncTokenFromStorage } from './slices/authSlice';
 import appReducer from './slices/appSlice';
 import cartReducer from './slices/cartSlice';
 import courtsReducer from './slices/courtsSlice';
+import locationsReducer from './slices/locationsSlice';
+import gameTypesReducer from './slices/gameTypesSlice';
 
 // Middleware for localStorage synchronization between tabs
 const localStorageSyncMiddleware = (store: any) => (next: any) => (action: any) => {
@@ -26,6 +28,8 @@ export const store = configureStore({
     app: appReducer,
     cart: cartReducer,
     courts: courtsReducer,
+    locations: locationsReducer,
+    gameTypes: gameTypesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

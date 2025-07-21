@@ -6,8 +6,13 @@ import { Collapse } from '../components/picklematch/Collapse';
 import { Tip } from '../components/picklematch/Tip';
 import { CroppedText } from '../components/picklematch/CroppedText';
 import { SliderRange } from '../components/picklematch/SliderRange';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
+import { addLocation, updateLocation, addCourt, updateCourt } from '../store/slices/locationsSlice';
+import { addGameType, updateGameType } from '../store/slices/gameTypesSlice';
+import { CourtForm, CourtFormData } from '../components/admin/forms/CourtForm';
+import { LocationForm, LocationFormData } from '../components/admin/forms/LocationForm';
+import { GameTypeForm, GameTypeFormData } from '../components/admin/forms/GameTypeForm';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -248,45 +253,8 @@ const TimeSlot = styled.button`
   }
 `;
 
-// Sample data (extracted from CourtBookingApp)
-const locations: Location[] = [
-  {
-    id: 'koorti',
-    name: 'Koorti Sports Complex',
-    address: 'Koorti tee 1, Nashville, Tennessee',
-    coordinates: { lat: 59.437, lng: 24.7536 },
-    courts: [
-      {
-        id: 'koorti-tennis-1',
-        name: 'Tennis Court A',
-        location: 'Koorti',
-        games: ['tennis'],
-        pricePerHour: 25,
-        rating: 4.5,
-        description: 'Professional tennis court with high-quality surface and excellent lighting.',
-        amenities: ['Lighting', 'Seating', 'Equipment rental', 'Changing rooms'],
-        coordinates: { lat: 59.437, lng: 24.7536 },
-        image: 'https://via.placeholder.com/300x200/4CAF50/ffffff?text=Tennis+Court',
-        availability: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '18:00', '19:00'],
-      },
-      {
-        id: 'koorti-pickleball-1',
-        name: 'Pickleball Court Premium',
-        location: 'Koorti',
-        games: ['pickleball'],
-        pricePerHour: 20,
-        rating: 4.8,
-        description: 'State-of-the-art pickleball court designed for both beginners and advanced players.',
-        amenities: ['Professional net', 'Court lines', 'Equipment rental', 'Storage'],
-        coordinates: { lat: 59.4371, lng: 24.7537 },
-        image: 'https://via.placeholder.com/300x200/2196F3/ffffff?text=Pickleball+Court',
-        availability: ['08:00', '09:00', '12:00', '13:00', '17:00', '18:00', '20:00'],
-      },
-    ],
-  },
-];
-
 const CourtsPage: FC = () => {
+  const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedGame, setSelectedGame] = useState<string>('');
@@ -295,12 +263,14 @@ const CourtsPage: FC = () => {
   const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
-  const [adminModalType, setAdminModalType] = useState<'add-court' | 'edit-court' | 'add-location' | 'add-game' | null>(
-    null
-  );
+  const [adminModalType, setAdminModalType] = useState<
+    'add-court' | 'edit-court' | 'add-location' | 'edit-location' | 'add-game' | 'edit-game' | null
+  >(null);
 
-  // Get current user's admin status
+  // Get data from Redux store
   const { profile } = useAppSelector((state) => state.auth);
+  const { locations } = useAppSelector((state) => state.locations);
+  const { gameTypes } = useAppSelector((state) => state.gameTypes);
   const isAdmin = profile?.role === 'admin';
 
   // Check if modal should be open based on URL
@@ -347,7 +317,9 @@ const CourtsPage: FC = () => {
   };
 
   // Admin functionality handlers
-  const handleOpenAdminModal = (type: 'add-court' | 'edit-court' | 'add-location' | 'add-game') => {
+  const handleOpenAdminModal = (
+    type: 'add-court' | 'edit-court' | 'add-location' | 'edit-location' | 'add-game' | 'edit-game'
+  ) => {
     setAdminModalType(type);
     setShowAdminModal(true);
   };
@@ -357,9 +329,62 @@ const CourtsPage: FC = () => {
     setAdminModalType(null);
   };
 
-  const handleAdminAction = () => {
-    console.log('[DEBUG_LOG] Admin action:', adminModalType);
-    alert(`Admin action: ${adminModalType} - This would save to backend`);
+  // Form submission handlers
+  const handleCourtSubmit = (data: CourtFormData) => {
+    console.log('[DEBUG_LOG] Court form submitted:', data);
+
+    // Find the location for this court
+    const location = locations.find((loc) => loc.id === data.locationId);
+    if (!location) {
+      console.error('Location not found for court');
+      return;
+    }
+
+    // Convert form data to Court format
+    const courtData = {
+      id: data.id,
+      name: data.name,
+      location: location.name,
+      games: data.games,
+      pricePerHour: data.pricePerHour,
+      rating: data.rating,
+      description: data.description,
+      amenities: data.amenities,
+      coordinates: data.coordinates,
+      image: data.image,
+      availability: data.availability,
+    };
+
+    if (adminModalType === 'add-court') {
+      dispatch(addCourt({ locationId: data.locationId, court: courtData }));
+    } else if (adminModalType === 'edit-court') {
+      dispatch(updateCourt({ locationId: data.locationId, court: courtData }));
+    }
+
+    handleCloseAdminModal();
+  };
+
+  const handleLocationSubmit = (data: LocationFormData) => {
+    console.log('[DEBUG_LOG] Location form submitted:', data);
+
+    if (adminModalType === 'add-location') {
+      dispatch(addLocation(data));
+    } else if (adminModalType === 'edit-location') {
+      dispatch(updateLocation(data));
+    }
+
+    handleCloseAdminModal();
+  };
+
+  const handleGameTypeSubmit = (data: GameTypeFormData) => {
+    console.log('[DEBUG_LOG] Game type form submitted:', data);
+
+    if (adminModalType === 'add-game') {
+      dispatch(addGameType(data));
+    } else if (adminModalType === 'edit-game') {
+      dispatch(updateGameType(data));
+    }
+
     handleCloseAdminModal();
   };
 
@@ -407,9 +432,11 @@ const CourtsPage: FC = () => {
             </Tip>
             <FilterSelect id="game-select" value={selectedGame} onChange={(e) => setSelectedGame(e.target.value)}>
               <option value="">All Games</option>
-              <option value="tennis">Tennis</option>
-              <option value="pickleball">Pickleball</option>
-              <option value="volleyball">Volleyball</option>
+              {gameTypes.map((gameType) => (
+                <option key={gameType.id} value={gameType.id}>
+                  {gameType.name}
+                </option>
+              ))}
             </FilterSelect>
           </FilterGroup>
 
@@ -512,50 +539,39 @@ const CourtsPage: FC = () => {
       {/* Admin Modal - Only accessible to admins */}
       <ModalOverlay isVisible={showAdminModal} onClick={handleCloseAdminModal}>
         <ModalContent onClick={(e) => e.stopPropagation()}>
-          <ModalTitle>
-            {adminModalType === 'add-court' && '🏟️ Add New Court'}
-            {adminModalType === 'edit-court' && '✏️ Edit Court'}
-            {adminModalType === 'add-location' && '📍 Add New Location'}
-            {adminModalType === 'add-game' && '🎮 Add New Game Type'}
-          </ModalTitle>
-          <p>
-            {adminModalType === 'add-court' && 'Create a new court with all necessary details.'}
-            {adminModalType === 'edit-court' && 'Modify the selected court information.'}
-            {adminModalType === 'add-location' && 'Add a new location where courts can be placed.'}
-            {adminModalType === 'add-game' && 'Add a new game type that can be played on courts.'}
-          </p>
-          <p style={{ color: '#666', fontSize: '14px', marginTop: '16px' }}>
-            This is a demo modal. In a real application, this would contain forms to manage courts, locations, and
-            games.
-          </p>
-          <ModalActions>
-            <button
-              onClick={handleCloseAdminModal}
-              style={{
-                padding: '10px 20px',
-                background: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleAdminAction}
-              style={{
-                padding: '10px 20px',
-                background: '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-              }}
-            >
-              Save Changes
-            </button>
-          </ModalActions>
+          {adminModalType === 'add-court' && (
+            <CourtForm onSubmit={handleCourtSubmit} onCancel={handleCloseAdminModal} isEdit={false} />
+          )}
+          {adminModalType === 'edit-court' && (
+            <CourtForm
+              initialData={selectedCourt || undefined}
+              onSubmit={handleCourtSubmit}
+              onCancel={handleCloseAdminModal}
+              isEdit={true}
+            />
+          )}
+          {adminModalType === 'add-location' && (
+            <LocationForm onSubmit={handleLocationSubmit} onCancel={handleCloseAdminModal} isEdit={false} />
+          )}
+          {adminModalType === 'edit-location' && (
+            <LocationForm
+              initialData={locations.find((loc) => loc.id === selectedLocation) || undefined}
+              onSubmit={handleLocationSubmit}
+              onCancel={handleCloseAdminModal}
+              isEdit={true}
+            />
+          )}
+          {adminModalType === 'add-game' && (
+            <GameTypeForm onSubmit={handleGameTypeSubmit} onCancel={handleCloseAdminModal} isEdit={false} />
+          )}
+          {adminModalType === 'edit-game' && (
+            <GameTypeForm
+              initialData={gameTypes.find((game) => game.id === selectedGame) || undefined}
+              onSubmit={handleGameTypeSubmit}
+              onCancel={handleCloseAdminModal}
+              isEdit={true}
+            />
+          )}
         </ModalContent>
       </ModalOverlay>
     </PageContainer>
