@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import { styled, keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 import { HeaderProps, ProfileFormData, LoginFormData, RegisterFormData } from '../types';
 import { Logo } from '../logo/Logo';
 import { ThemeSwitcher } from '../../ThemeSwitcher/ThemeSwitcher';
@@ -264,6 +265,81 @@ const HeaderLink = styled.a`
   }
 `;
 
+const HeaderNavLink = styled(Link)`
+  text-decoration: none;
+  font-weight: 600;
+  font-size: clamp(12px, 1.5vw, 15px);
+  padding: clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 16px);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  color: ${(props) => props.theme.colorTextSecondary};
+
+  // Enhanced hover effects with multiple animations
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    color: ${(props) => props.theme.colorPrimary};
+    background-color: ${(props) => props.theme.colorBgTertiary};
+
+    // Multi-layered glow effect
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3), 0 2px 10px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+    // Animate the shine effect
+    &::before {
+      transform: translateX(100%);
+    }
+
+    // Subtle border glow
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+    color: white;
+    background-color: ${(props) => props.theme.colorPrimary};
+
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  // Animated shine effect that moves on hover
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: transform 0.6s ease;
+    z-index: 1;
+    pointer-events: none; // Prevent blocking interactions with dropdown
+  }
+
+  // Subtle border glow effect
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  // Ensure text stays above effects
+  & > * {
+    position: relative;
+    z-index: 2;
+  }
+`;
+
 // Modal/Popup styled components
 const ModalOverlay = styled.div<{ isVisible: boolean }>`
   position: fixed;
@@ -380,11 +456,9 @@ export const Header: FC<HeaderProps> = ({ className }) => {
         <HeaderContainer>
           <Logo />
           <HeaderNav>
-            <HeaderLink href="javascript:void(0)">{t('courts')}</HeaderLink>
-            <HeaderLink href="javascript:void(0)">{t('booking')}</HeaderLink>
-            <HeaderLink href="javascript:void(0)" onClick={handleProfileClick}>
-              {t('profile')}
-            </HeaderLink>
+            <HeaderNavLink to="/courts">{t('courts')}</HeaderNavLink>
+            <HeaderNavLink to="/cart">Cart</HeaderNavLink>
+            <HeaderNavLink to="/profile">{t('profile')}</HeaderNavLink>
             <HeaderLink href="javascript:void(0)" onClick={handleAuthClick}>
               {t('login')}
             </HeaderLink>
