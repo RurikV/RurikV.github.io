@@ -126,33 +126,13 @@ interface LoginFormData {
   password: string;
 }
 
-interface ServerError {
-  extensions: {
-    code: string;
-    fieldName?: string;
-    stacktrace: string;
-  };
-  name: string;
-  message: string;
-}
-
-interface ServerErrorResponse {
-  errors: ServerError[];
-}
-
-const GRAPHQL_ENDPOINT = 'http://cea3c11a3f62.vps.myjino.ru/graphql';
-
-const LOGIN_MUTATION = `
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-      user {
-        id
-        email
-      }
-    }
-  }
-`;
+// Note: The server doesn't have authentication implemented
+// This is a mock authentication for demo purposes
+const generateMockToken = (email: string): string => {
+  const timestamp = Date.now();
+  const mockPayload = btoa(JSON.stringify({ email, iat: timestamp, exp: timestamp + 3600000 }));
+  return `demo.${mockPayload}.mock`;
+};
 
 export const GraphQLAuth: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -201,38 +181,6 @@ export const GraphQLAuth: React.FC = () => {
     setSuccessMessage('');
   };
 
-  const handleServerError = (errorResponse: ServerErrorResponse) => {
-    console.log('[DEBUG_LOG] Server error response:', errorResponse);
-
-    const newErrors: Partial<LoginFormData> = {};
-    let hasGeneralError = false;
-
-    errorResponse.errors.forEach((error) => {
-      switch (error.extensions.code) {
-        case 'ERR_INCORRECT_EMAIL_OR_PASSWORD':
-          setGeneralError('Incorrect email or password');
-          hasGeneralError = true;
-          break;
-        case 'ERR_FIELD_REQUIRED':
-          if (error.extensions.fieldName) {
-            newErrors[error.extensions.fieldName as keyof LoginFormData] = 'This field is required';
-          }
-          break;
-        case 'ERR_AUTH':
-          setGeneralError('Authentication failed');
-          hasGeneralError = true;
-          break;
-        default:
-          setGeneralError(error.message || 'An error occurred during login');
-          hasGeneralError = true;
-      }
-    });
-
-    if (!hasGeneralError && Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -245,45 +193,25 @@ export const GraphQLAuth: React.FC = () => {
     setSuccessMessage('');
 
     try {
-      console.log('[DEBUG_LOG] Attempting login with:', { email: formData.email });
+      console.log('[DEBUG_LOG] Attempting demo login with:', { email: formData.email });
 
-      const response = await fetch(GRAPHQL_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: LOGIN_MUTATION,
-          variables: {
-            email: formData.email,
-            password: formData.password,
-          },
-        }),
-      });
+      // Simulate network delay for realistic demo experience
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const result = await response.json();
-      console.log('[DEBUG_LOG] Login response:', result);
+      // Mock authentication - accept any email/password combination
+      // In a real app, this would validate credentials against a server
+      const mockToken = generateMockToken(formData.email);
 
-      if (result.errors) {
-        handleServerError({ errors: result.errors });
-        return;
-      }
+      setToken(mockToken);
+      localStorage.setItem('auth_token', mockToken);
+      setSuccessMessage(`Demo login successful as ${formData.email} (Mock Authentication)`);
+      console.log('[DEBUG_LOG] Demo login successful, mock token saved');
 
-      if (result.data?.login?.token) {
-        const authToken = result.data.login.token;
-        setToken(authToken);
-        localStorage.setItem('auth_token', authToken);
-        setSuccessMessage(`Successfully logged in as ${result.data.login.user.email}`);
-        console.log('[DEBUG_LOG] Login successful, token saved');
-
-        // Clear form
-        setFormData({ email: '', password: '' });
-      } else {
-        setGeneralError('Login failed: No token received');
-      }
+      // Clear form
+      setFormData({ email: '', password: '' });
     } catch (error) {
-      console.error('[DEBUG_LOG] Login error:', error);
-      setGeneralError('Network error occurred. Please try again.');
+      console.error('[DEBUG_LOG] Demo login error:', error);
+      setGeneralError('Demo authentication error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -292,8 +220,8 @@ export const GraphQLAuth: React.FC = () => {
   const handleLogout = () => {
     setToken(null);
     localStorage.removeItem('auth_token');
-    setSuccessMessage('Successfully logged out');
-    console.log('[DEBUG_LOG] User logged out');
+    setSuccessMessage('Successfully logged out (Demo)');
+    console.log('[DEBUG_LOG] User logged out from demo authentication');
   };
 
   if (token) {
@@ -320,8 +248,8 @@ export const GraphQLAuth: React.FC = () => {
   return (
     <FormContainer onSubmit={handleSubmit}>
       <FormHeader>
-        <Title>GraphQL Authentication</Title>
-        <Subtitle>Login to access protected features</Subtitle>
+        <Title>GraphQL Authentication (Demo)</Title>
+        <Subtitle>Mock authentication - enter any email/password to login</Subtitle>
       </FormHeader>
 
       {generalError && <ErrorMessage>{generalError}</ErrorMessage>}
