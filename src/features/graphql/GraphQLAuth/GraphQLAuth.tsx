@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styledComponents from 'styled-components';
-import { handleGraphQLErrors } from '../types/errors';
 
 const FormContainer = styledComponents.form`
   display: flex;
@@ -46,7 +45,7 @@ const Label = styledComponents.label`
 
 const Input = styledComponents.input<{ hasError?: boolean }>`
   padding: 12px 16px;
-  border: 2px solid ${props => props.hasError ? '#e74c3c' : '#e1e8ed'};
+  border: 2px solid ${(props) => (props.hasError ? '#e74c3c' : '#e1e8ed')};
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.2s ease;
@@ -183,22 +182,20 @@ export const GraphQLAuth: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field: keyof LoginFormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData(prev => ({
+  const handleInputChange = (field: keyof LoginFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
       ...prev,
       [field]: e.target.value,
     }));
-    
+
     // Clear field error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [field]: undefined,
       }));
     }
-    
+
     // Clear general messages
     setGeneralError('');
     setSuccessMessage('');
@@ -206,11 +203,11 @@ export const GraphQLAuth: React.FC = () => {
 
   const handleServerError = (errorResponse: ServerErrorResponse) => {
     console.log('[DEBUG_LOG] Server error response:', errorResponse);
-    
+
     const newErrors: Partial<LoginFormData> = {};
     let hasGeneralError = false;
 
-    errorResponse.errors.forEach(error => {
+    errorResponse.errors.forEach((error) => {
       switch (error.extensions.code) {
         case 'ERR_INCORRECT_EMAIL_OR_PASSWORD':
           setGeneralError('Incorrect email or password');
@@ -238,7 +235,7 @@ export const GraphQLAuth: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -278,7 +275,7 @@ export const GraphQLAuth: React.FC = () => {
         localStorage.setItem('auth_token', authToken);
         setSuccessMessage(`Successfully logged in as ${result.data.login.user.email}`);
         console.log('[DEBUG_LOG] Login successful, token saved');
-        
+
         // Clear form
         setFormData({ email: '', password: '' });
       } else {
@@ -306,17 +303,16 @@ export const GraphQLAuth: React.FC = () => {
           <Title>Authenticated</Title>
           <Subtitle>You are successfully logged in</Subtitle>
         </FormHeader>
-        
+
         <SuccessMessage>Authentication successful!</SuccessMessage>
-        
+
         <TokenDisplay>
-          <strong>Token:</strong><br />
+          <strong>Token:</strong>
+          <br />
           {token}
         </TokenDisplay>
-        
-        <LogoutButton onClick={handleLogout}>
-          Logout
-        </LogoutButton>
+
+        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </FormContainer>
     );
   }

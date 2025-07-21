@@ -34,9 +34,7 @@ export const getErrorMessage = (error: ServerError): string => {
     case ErrorCode.ERR_ACCOUNT_ALREADY_EXIST:
       return 'Account already exists';
     case ErrorCode.ERR_FIELD_REQUIRED:
-      return error.extensions.fieldName
-        ? `${error.extensions.fieldName} is required`
-        : 'Required field is missing';
+      return error.extensions.fieldName ? `${error.extensions.fieldName} is required` : 'Required field is missing';
     case ErrorCode.ERR_INCORRECT_PASSWORD:
       return 'Incorrect password';
     case ErrorCode.ERR_INVALID_PASSWORD:
@@ -60,12 +58,11 @@ export const getErrorMessage = (error: ServerError): string => {
   }
 };
 
-export const handleGraphQLErrors = (errors: any[]): string => {
+export const handleGraphQLErrors = (errors: ServerError[]): string => {
   if (!errors || errors.length === 0) {
     return 'Unknown error occurred';
   }
 
-  const serverErrors = errors as ServerError[];
-  const errorMessages = serverErrors.map(getErrorMessage);
+  const errorMessages = errors.map(getErrorMessage);
   return errorMessages.join(', ');
 };

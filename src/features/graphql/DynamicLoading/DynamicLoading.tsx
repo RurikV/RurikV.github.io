@@ -139,166 +139,140 @@ export const DynamicLoading: React.FC = () => {
   const [page, setPage] = useState(1);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  // Mock data generators
-  const generateMockProducts = (pageNum: number, pageSize: number = 10): Product[] => {
-    const products: Product[] = [];
-    const startId = (pageNum - 1) * pageSize + 1;
-    
-    for (let i = 0; i < pageSize; i++) {
-      const id = startId + i;
-      products.push({
-        id: `product-${id}`,
-        name: `Product ${id}`,
-        price: Math.round((Math.random() * 100 + 10) * 100) / 100,
-        category: ['Electronics', 'Clothing', 'Books', 'Home'][Math.floor(Math.random() * 4)],
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-      });
-    }
-    
-    return products;
-  };
+  const loadData = useCallback(
+    async (pageNum: number, reset = false) => {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        setError('Please login first to load data');
+        return;
+      }
 
-  const generateMockOperations = (pageNum: number, pageSize: number = 10): Operation[] => {
-    const operations: Operation[] = [];
-    const startId = (pageNum - 1) * pageSize + 1;
-    
-    for (let i = 0; i < pageSize; i++) {
-      const id = startId + i;
-      const type = Math.random() > 0.5 ? 'Profit' : 'Cost';
-      operations.push({
-        id: `operation-${id}`,
-        name: `${type} Operation ${id}`,
-        amount: Math.round((Math.random() * 500 + 50) * 100) / 100,
-        type,
-        date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-      });
-    }
-    
-    return operations;
-  };
+      setIsLoading(true);
+      setError('');
 
-  const loadData = useCallback(async (pageNum: number, reset: boolean = false) => {
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      setError('Please login first to load data');
-      return;
-    }
+      try {
+        console.log(`[DEBUG_LOG] Loading ${dataType} page ${pageNum}`);
 
-    setIsLoading(true);
-    setError('');
+        const GRAPHQL_ENDPOINT = 'http://cea3c11a3f62.vps.myjino.ru/graphql';
+        const pageSize = 10;
 
-    try {
-      console.log(`[DEBUG_LOG] Loading ${dataType} page ${pageNum}`);
+        let query: string;
+        let variables: {
+          pagination: {
+            pageNumber: number;
+            pageSize: number;
+          };
+          sorting: {
+            field: string;
+            type: string;
+          };
+        };
 
-      const GRAPHQL_ENDPOINT = 'http://cea3c11a3f62.vps.myjino.ru/graphql';
-      const pageSize = 10;
-
-      let query: string;
-      let variables: any;
-
-      if (dataType === 'products') {
-        query = `
-          query GetProducts($pagination: Pagination, $sorting: Sorting) {
-            products(pagination: $pagination, sorting: $sorting) {
-              id
-              name
-              price
-              oldPrice
-              desc
-              photo
-              createdAt
-              updatedAt
-              category {
+        if (dataType === 'products') {
+          query = `
+            query GetProducts($pagination: Pagination, $sorting: Sorting) {
+              products(pagination: $pagination, sorting: $sorting) {
                 id
                 name
+                price
+                oldPrice
+                desc
+                photo
+                createdAt
+                updatedAt
+                category {
+                  id
+                  name
+                }
               }
             }
-          }
-        `;
-        variables = {
-          pagination: {
-            pageNumber: pageNum,
-            pageSize: pageSize,
-          },
-          sorting: {
-            field: 'createdAt',
-            type: 'DESC',
-          },
-        };
-      } else {
-        query = `
-          query GetOperations($pagination: Pagination, $sorting: Sorting) {
-            operations(pagination: $pagination, sorting: $sorting) {
-              id
-              name
-              desc
-              amount
-              type
-              date
-              createdAt
-              updatedAt
-              category {
+          `;
+          variables = {
+            pagination: {
+              pageNumber: pageNum,
+              pageSize: pageSize,
+            },
+            sorting: {
+              field: 'createdAt',
+              type: 'DESC',
+            },
+          };
+        } else {
+          query = `
+            query GetOperations($pagination: Pagination, $sorting: Sorting) {
+              operations(pagination: $pagination, sorting: $sorting) {
                 id
                 name
+                desc
+                amount
+                type
+                date
+                createdAt
+                updatedAt
+                category {
+                  id
+                  name
+                }
               }
             }
-          }
-        `;
-        variables = {
-          pagination: {
-            pageNumber: pageNum,
-            pageSize: pageSize,
+          `;
+          variables = {
+            pagination: {
+              pageNumber: pageNum,
+              pageSize: pageSize,
+            },
+            sorting: {
+              field: 'date',
+              type: 'DESC',
+            },
+          };
+        }
+
+        const response = await fetch(GRAPHQL_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
-          sorting: {
-            field: 'date',
-            type: 'DESC',
-          },
-        };
+          body: JSON.stringify({
+            query,
+            variables,
+          }),
+        });
+
+        const result = await response.json();
+        console.log(`[DEBUG_LOG] GraphQL response:`, result);
+
+        if (result.errors) {
+          setError(`Failed to load ${dataType}: ${handleGraphQLErrors(result.errors)}`);
+          return;
+        }
+
+        const newItems = dataType === 'products' ? result.data.products : result.data.operations;
+
+        if (reset) {
+          setItems(newItems || []);
+        } else {
+          setItems((prev) => [...prev, ...(newItems || [])]);
+        }
+
+        // Check if we have more data (if we got less than pageSize, we're at the end)
+        setHasMore((newItems || []).length === pageSize);
+
+        console.log(`[DEBUG_LOG] Loaded ${(newItems || []).length} ${dataType} items for page ${pageNum}`);
+      } catch (err) {
+        console.error(`[DEBUG_LOG] Error loading ${dataType}:`, err);
+        setError(`Failed to load ${dataType}`);
+      } finally {
+        setIsLoading(false);
       }
-
-      const response = await fetch(GRAPHQL_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          query,
-          variables,
-        }),
-      });
-
-      const result = await response.json();
-      console.log(`[DEBUG_LOG] GraphQL response:`, result);
-
-      if (result.errors) {
-        throw new Error(handleGraphQLErrors(result.errors));
-      }
-
-      const newItems = dataType === 'products' ? result.data.products : result.data.operations;
-
-      if (reset) {
-        setItems(newItems || []);
-      } else {
-        setItems((prev) => [...prev, ...(newItems || [])]);
-      }
-
-      // Check if we have more data (if we got less than pageSize, we're at the end)
-      setHasMore((newItems || []).length === pageSize);
-
-      console.log(`[DEBUG_LOG] Loaded ${(newItems || []).length} ${dataType} items for page ${pageNum}`);
-      
-    } catch (err) {
-      console.error(`[DEBUG_LOG] Error loading ${dataType}:`, err);
-      setError(`Failed to load ${dataType}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dataType]);
+    },
+    [dataType]
+  );
 
   const handleDataTypeChange = (newType: DataType) => {
     if (newType === dataType) return;
-    
+
     setDataType(newType);
     setItems([]);
     setPage(1);
@@ -344,8 +318,8 @@ export const DynamicLoading: React.FC = () => {
           <ItemInfo>
             <ItemName>{item.name}</ItemName>
             <ItemDetails>
-              Price: ${item.price} | Category: {item.category} | 
-              Created: {new Date(item.createdAt).toLocaleDateString()}
+              Price: ${item.price} | Category: {item.category} | Created:{' '}
+              {new Date(item.createdAt).toLocaleDateString()}
             </ItemDetails>
           </ItemInfo>
         </Item>
@@ -356,8 +330,7 @@ export const DynamicLoading: React.FC = () => {
           <ItemInfo>
             <ItemName>{item.name}</ItemName>
             <ItemDetails>
-              Amount: ${item.amount} | Type: {item.type} | 
-              Date: {new Date(item.date).toLocaleDateString()}
+              Amount: ${item.amount} | Type: {item.type} | Date: {new Date(item.date).toLocaleDateString()}
             </ItemDetails>
           </ItemInfo>
         </Item>
@@ -368,15 +341,12 @@ export const DynamicLoading: React.FC = () => {
   return (
     <Container>
       <Title>Dynamic Loading</Title>
-      
+
       <Controls>
-        <Button 
-          className={dataType === 'products' ? 'active' : ''}
-          onClick={() => handleDataTypeChange('products')}
-        >
+        <Button className={dataType === 'products' ? 'active' : ''} onClick={() => handleDataTypeChange('products')}>
           Products
         </Button>
-        <Button 
+        <Button
           className={dataType === 'operations' ? 'active' : ''}
           onClick={() => handleDataTypeChange('operations')}
         >
@@ -392,7 +362,7 @@ export const DynamicLoading: React.FC = () => {
 
       <ItemsList>
         {items.map(renderItem)}
-        
+
         {hasMore && (
           <LoadMoreTrigger ref={loadMoreRef}>
             {isLoading ? (
@@ -402,10 +372,8 @@ export const DynamicLoading: React.FC = () => {
             )}
           </LoadMoreTrigger>
         )}
-        
-        {!hasMore && items.length > 0 && (
-          <LoadingIndicator>No more {dataType} to load</LoadingIndicator>
-        )}
+
+        {!hasMore && items.length > 0 && <LoadingIndicator>No more {dataType} to load</LoadingIndicator>}
       </ItemsList>
     </Container>
   );
