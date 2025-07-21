@@ -6,6 +6,7 @@ import ProfilePage from '../pages/ProfilePage';
 import CourtsPage from '../pages/CourtsPage';
 import CartPage from '../pages/CartPage';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
+import { RegistrationDemo } from '../pages/RegistrationDemo';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -44,6 +45,7 @@ const AppRouter: React.FC = () => {
             />
             <Route path="/courts" element={<CourtsPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/registration_demo" element={<RegistrationDemo />} />
             <Route path="*" element={<Navigate to="/courts" replace />} />
           </Routes>
         </AppMain>
