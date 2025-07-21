@@ -112,7 +112,10 @@ interface Product {
   id: string;
   name: string;
   price: number;
-  category?: string;
+  category?: {
+    id: string;
+    name: string;
+  };
   createdAt: string;
 }
 
@@ -122,6 +125,10 @@ interface Operation {
   amount: number;
   type: 'Cost' | 'Profit';
   date: string;
+  category?: {
+    id: string;
+    name: string;
+  };
 }
 
 type Item = Product | Operation;
@@ -158,72 +165,112 @@ export const DynamicLoading: React.FC = () => {
 
         let query: string;
         let variables: {
-          pagination: {
-            pageNumber: number;
-            pageSize: number;
-          };
-          sorting: {
-            field: string;
-            type: string;
+          input: {
+            pagination: {
+              pageNumber: number;
+              pageSize: number;
+            };
+            sorting: {
+              field: string;
+              type: string;
+            };
           };
         };
 
         if (dataType === 'products') {
           query = `
-            query GetProducts($pagination: Pagination, $sorting: Sorting) {
-              products(pagination: $pagination, sorting: $sorting) {
-                id
-                name
-                price
-                oldPrice
-                desc
-                photo
-                createdAt
-                updatedAt
-                category {
-                  id
-                  name
+            query GetProducts($input: ProductGetManyInput) {
+              products {
+                getMany(input: $input) {
+                  data {
+                    id
+                    name
+                    price
+                    oldPrice
+                    desc
+                    photo
+                    createdAt
+                    updatedAt
+                    category {
+                      id
+                      name
+                    }
+                  }
+                  pagination {
+                    pageNumber
+                    pageSize
+                    total
+                  }
                 }
               }
             }
           `;
           variables = {
-            pagination: {
-              pageNumber: pageNum,
-              pageSize: pageSize,
-            },
-            sorting: {
-              field: 'createdAt',
-              type: 'DESC',
+            input: {
+              pagination: {
+                pageNumber: pageNum,
+                pageSize: pageSize,
+              },
+              sorting: {
+                field: 'createdAt',
+                type: 'DESC',
+              },
             },
           };
         } else {
           query = `
-            query GetOperations($pagination: Pagination, $sorting: Sorting) {
-              operations(pagination: $pagination, sorting: $sorting) {
-                id
-                name
-                desc
-                amount
-                type
-                date
-                createdAt
-                updatedAt
-                category {
-                  id
-                  name
+            query GetOperations($input: OperationGetManyInput) {
+              operations {
+                getMany(input: $input) {
+                  data {
+                    ... on Cost {
+                      id
+                      name
+                      desc
+                      amount
+                      type
+                      date
+                      createdAt
+                      updatedAt
+                      category {
+                        id
+                        name
+                      }
+                    }
+                    ... on Profit {
+                      id
+                      name
+                      desc
+                      amount
+                      type
+                      date
+                      createdAt
+                      updatedAt
+                      category {
+                        id
+                        name
+                      }
+                    }
+                  }
+                  pagination {
+                    pageNumber
+                    pageSize
+                    total
+                  }
                 }
               }
             }
           `;
           variables = {
-            pagination: {
-              pageNumber: pageNum,
-              pageSize: pageSize,
-            },
-            sorting: {
-              field: 'date',
-              type: 'DESC',
+            input: {
+              pagination: {
+                pageNumber: pageNum,
+                pageSize: pageSize,
+              },
+              sorting: {
+                field: 'date',
+                type: 'DESC',
+              },
             },
           };
         }
@@ -244,20 +291,31 @@ export const DynamicLoading: React.FC = () => {
         console.log(`[DEBUG_LOG] GraphQL response:`, result);
 
         if (result.errors) {
-          setError(`Failed to load ${dataType}: ${handleGraphQLErrors(result.errors)}`);
+          const errorMessage = handleGraphQLErrors(result.errors);
+          if (errorMessage.includes('User is not authenticated')) {
+            setError(
+              `Demo Limitation: Cannot load ${dataType} - the server requires valid authentication tokens, but no authentication endpoints are available. This is a server configuration issue.`
+            );
+          } else {
+            setError(`Failed to load ${dataType}: ${errorMessage}`);
+          }
           return;
         }
 
-        const newItems = dataType === 'products' ? result.data.products : result.data.operations;
+        const responseData =
+          dataType === 'products' ? result.data?.products?.getMany : result.data?.operations?.getMany;
+
+        const newItems = responseData?.data || [];
+        const paginationInfo = responseData?.pagination;
 
         if (reset) {
-          setItems(newItems || []);
+          setItems(newItems);
         } else {
-          setItems((prev) => [...prev, ...(newItems || [])]);
+          setItems((prev) => [...prev, ...newItems]);
         }
 
         // Check if we have more data (if we got less than pageSize, we're at the end)
-        setHasMore((newItems || []).length === pageSize);
+        setHasMore(newItems.length === pageSize);
 
         console.log(`[DEBUG_LOG] Loaded ${(newItems || []).length} ${dataType} items for page ${pageNum}`);
       } catch (err) {
@@ -319,7 +377,7 @@ export const DynamicLoading: React.FC = () => {
           <ItemInfo>
             <ItemName>{item.name}</ItemName>
             <ItemDetails>
-              Price: ${item.price} | Category: {item.category} | Created:{' '}
+              Price: ${item.price} | Category: {item.category?.name || 'N/A'} | Created:{' '}
               {new Date(item.createdAt).toLocaleDateString()}
             </ItemDetails>
           </ItemInfo>

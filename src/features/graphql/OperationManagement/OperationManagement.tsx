@@ -93,16 +93,16 @@ export const OperationManagement: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleInputChange = (field: keyof OperationFormData) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-    setError('');
-    setSuccess('');
-  };
+  const handleInputChange =
+    (field: keyof OperationFormData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+      setError('');
+      setSuccess('');
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,15 +122,28 @@ export const OperationManagement: React.FC = () => {
 
       const GRAPHQL_ENDPOINT = 'http://cea3c11a3f62.vps.myjino.ru/graphql';
       const CREATE_OPERATION_MUTATION = `
-        mutation CreateOperation($input: OperationInput!) {
-          createOperation(input: $input) {
-            id
-            name
-            desc
-            amount
-            type
-            date
-            createdAt
+        mutation CreateOperation($input: OperationAddInput!) {
+          operations {
+            add(input: $input) {
+              ... on Cost {
+                id
+                name
+                desc
+                amount
+                type
+                date
+                createdAt
+              }
+              ... on Profit {
+                id
+                name
+                desc
+                amount
+                type
+                date
+                createdAt
+              }
+            }
           }
         }
       `;
@@ -150,6 +163,7 @@ export const OperationManagement: React.FC = () => {
               amount: parseFloat(formData.amount),
               type: formData.type,
               date: formData.date,
+              categoryId: 'demo-category-id', // Demo category ID - in real app, this would be selected by user
             },
           },
         }),
@@ -159,11 +173,21 @@ export const OperationManagement: React.FC = () => {
       console.log('[DEBUG_LOG] Create operation response:', result);
 
       if (result.errors) {
-        throw new Error(handleGraphQLErrors(result.errors));
+        const errorMessage = handleGraphQLErrors(result.errors);
+        if (errorMessage.includes('User is not authenticated')) {
+          setError(
+            'Demo Limitation: The server requires valid authentication tokens, but no authentication endpoints are available. This is a server configuration issue - in a real application, you would have working login endpoints.'
+          );
+        } else {
+          setError(`Failed to create operation: ${errorMessage}`);
+        }
+        return;
       }
 
-      if (result.data?.createOperation) {
-        setSuccess(`${result.data.createOperation.type} operation "${result.data.createOperation.name}" created successfully!`);
+      if (result.data?.operations?.add) {
+        setSuccess(
+          `${result.data.operations.add.type} operation "${result.data.operations.add.name}" created successfully!`
+        );
         setFormData({
           name: '',
           desc: '',
@@ -171,7 +195,7 @@ export const OperationManagement: React.FC = () => {
           type: 'Cost',
           date: new Date().toISOString().split('T')[0],
         });
-        console.log('[DEBUG_LOG] Operation created successfully:', result.data.createOperation);
+        console.log('[DEBUG_LOG] Operation created successfully:', result.data.operations.add);
       } else {
         throw new Error('No operation data returned');
       }
@@ -194,13 +218,9 @@ export const OperationManagement: React.FC = () => {
           onChange={handleInputChange('name')}
           required
         />
-        
-        <TextArea
-          placeholder="Description (optional)"
-          value={formData.desc}
-          onChange={handleInputChange('desc')}
-        />
-        
+
+        <TextArea placeholder="Description (optional)" value={formData.desc} onChange={handleInputChange('desc')} />
+
         <Input
           type="number"
           step="0.01"
@@ -209,28 +229,19 @@ export const OperationManagement: React.FC = () => {
           onChange={handleInputChange('amount')}
           required
         />
-        
-        <Select
-          value={formData.type}
-          onChange={handleInputChange('type')}
-          required
-        >
+
+        <Select value={formData.type} onChange={handleInputChange('type')} required>
           <option value="Cost">Cost (Expense)</option>
           <option value="Profit">Profit (Income)</option>
         </Select>
-        
-        <Input
-          type="date"
-          value={formData.date}
-          onChange={handleInputChange('date')}
-          required
-        />
-        
+
+        <Input type="date" value={formData.date} onChange={handleInputChange('date')} required />
+
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Creating...' : `Create ${formData.type}`}
         </Button>
       </Form>
-      
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {success && <SuccessMessage>{success}</SuccessMessage>}
     </Container>

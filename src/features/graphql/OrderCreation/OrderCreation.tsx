@@ -104,43 +104,38 @@ const OrderSummary = styledComponents.div`
 `;
 
 interface OrderProduct {
-  productId: string;
+  id: string;
   productName: string;
   quantity: number;
   price: number;
 }
 
 export const OrderCreation: React.FC = () => {
-  const [products, setProducts] = useState<OrderProduct[]>([
-    { productId: '', productName: '', quantity: 1, price: 0 }
-  ]);
+  const [products, setProducts] = useState<OrderProduct[]>([{ id: '', productName: '', quantity: 1, price: 0 }]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   const addProduct = () => {
-    setProducts(prev => [
-      ...prev,
-      { productId: '', productName: '', quantity: 1, price: 0 }
-    ]);
+    setProducts((prev) => [...prev, { id: '', productName: '', quantity: 1, price: 0 }]);
   };
 
   const removeProduct = (index: number) => {
-    setProducts(prev => prev.filter((_, i) => i !== index));
+    setProducts((prev) => prev.filter((_, i) => i !== index));
   };
 
   const updateProduct = (index: number, field: keyof OrderProduct, value: string | number) => {
-    setProducts(prev => prev.map((product, i) => 
-      i === index ? { ...product, [field]: value } : product
-    ));
+    setProducts((prev) => prev.map((product, i) => (i === index ? { ...product, [field]: value } : product)));
     setError('');
     setSuccess('');
   };
 
   const calculateTotal = () => {
-    return products.reduce((total, product) => {
-      return total + (product.price * product.quantity);
-    }, 0).toFixed(2);
+    return products
+      .reduce((total, product) => {
+        return total + product.price * product.quantity;
+      }, 0)
+      .toFixed(2);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -156,10 +151,10 @@ export const OrderCreation: React.FC = () => {
       return;
     }
 
-    // Validate products
-    const validProducts = products.filter(p => p.productName && p.quantity > 0);
+    // Validate products - check for product IDs and quantity
+    const validProducts = products.filter((p) => p.id.trim() && p.quantity > 0);
     if (validProducts.length === 0) {
-      setError('Please add at least one product with valid details');
+      setError('Please add at least one product with valid ID and quantity');
       setIsLoading(false);
       return;
     }
@@ -169,29 +164,30 @@ export const OrderCreation: React.FC = () => {
 
       const GRAPHQL_ENDPOINT = 'http://cea3c11a3f62.vps.myjino.ru/graphql';
       const CREATE_ORDER_MUTATION = `
-        mutation CreateOrder($input: OrderInput!) {
-          createOrder(input: $input) {
-            id
-            status
-            createdAt
-            products {
-              _id
-              quantity
-              product {
-                id
-                name
-                price
+        mutation CreateOrder($input: OrderAddInput!) {
+          orders {
+            add(input: $input) {
+              id
+              status
+              createdAt
+              products {
+                _id
+                quantity
+                product {
+                  id
+                  name
+                  price
+                }
               }
             }
           }
         }
       `;
 
-      // Transform products for GraphQL input
-      const orderProducts = validProducts.map(product => ({
-        productName: product.productName,
+      // Transform products for GraphQL input - use correct ProductInput structure
+      const orderProducts = validProducts.map((product) => ({
+        id: product.id,
         quantity: product.quantity,
-        price: product.price,
       }));
 
       const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -214,16 +210,26 @@ export const OrderCreation: React.FC = () => {
       console.log('[DEBUG_LOG] Create order response:', result);
 
       if (result.errors) {
-        throw new Error(handleGraphQLErrors(result.errors));
+        const errorMessage = handleGraphQLErrors(result.errors);
+        if (errorMessage.includes('User is not authenticated')) {
+          setError(
+            'Demo Limitation: The server requires valid authentication tokens, but no authentication endpoints are available. This is a server configuration issue - in a real application, you would have working login endpoints.'
+          );
+        } else {
+          setError(`Failed to create order: ${errorMessage}`);
+        }
+        return;
       }
 
-      if (result.data?.createOrder) {
-        const order = result.data.createOrder;
-        setSuccess(`Order #${order.id} created successfully with ${order.products.length} products! Status: ${order.status}`);
-        setProducts([{ productId: '', productName: '', quantity: 1, price: 0 }]);
+      if (result.data?.orders?.add) {
+        const order = result.data.orders.add;
+        setSuccess(
+          `Order #${order.id} created successfully with ${order.products.length} products! Status: ${order.status}`
+        );
+        setProducts([{ id: '', productName: '', quantity: 1, price: 0 }]);
         console.log('[DEBUG_LOG] Order created successfully:', order);
       } else {
-        throw new Error('No order data returned');
+        setError('Failed to create order: No order data returned');
       }
     } catch (err) {
       console.error('[DEBUG_LOG] Order creation error:', err);
@@ -236,7 +242,7 @@ export const OrderCreation: React.FC = () => {
   return (
     <Container>
       <Title>Order Creation</Title>
-      
+
       <Form onSubmit={handleSubmit}>
         <div>
           <AddButton type="button" onClick={addProduct}>
@@ -248,18 +254,23 @@ export const OrderCreation: React.FC = () => {
           <ProductRow key={index}>
             <Input
               type="text"
-              placeholder="Product name"
+              placeholder="Product ID"
+              value={product.id}
+              onChange={(e) => updateProduct(index, 'id', e.target.value)}
+              required
+            />
+            <Input
+              type="text"
+              placeholder="Product name (display only)"
               value={product.productName}
               onChange={(e) => updateProduct(index, 'productName', e.target.value)}
-              required
             />
             <Input
               type="number"
               step="0.01"
-              placeholder="Price"
+              placeholder="Price (display only)"
               value={product.price || ''}
               onChange={(e) => updateProduct(index, 'price', parseFloat(e.target.value) || 0)}
-              required
             />
             <QuantityInput
               type="number"
@@ -278,8 +289,10 @@ export const OrderCreation: React.FC = () => {
         ))}
 
         <OrderSummary>
-          <strong>Order Summary:</strong><br />
-          Products: {products.filter(p => p.productName).length}<br />
+          <strong>Order Summary:</strong>
+          <br />
+          Products: {products.filter((p) => p.id.trim()).length}
+          <br />
           Total Amount: ${calculateTotal()}
         </OrderSummary>
 
@@ -287,7 +300,7 @@ export const OrderCreation: React.FC = () => {
           {isLoading ? 'Creating Order...' : 'Create Order'}
         </Button>
       </Form>
-      
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {success && <SuccessMessage>{success}</SuccessMessage>}
     </Container>

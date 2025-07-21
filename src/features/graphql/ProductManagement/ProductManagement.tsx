@@ -58,6 +58,7 @@ const SuccessMessage = styledComponents.div`
 export const ProductManagement: React.FC = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [desc, setDesc] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -76,16 +77,19 @@ export const ProductManagement: React.FC = () => {
     }
 
     try {
-      console.log('[DEBUG_LOG] Creating product:', { name, price });
+      console.log('[DEBUG_LOG] Creating product:', { name, price, desc });
 
       const GRAPHQL_ENDPOINT = 'http://cea3c11a3f62.vps.myjino.ru/graphql';
       const CREATE_PRODUCT_MUTATION = `
-        mutation CreateProduct($input: ProductInput!) {
-          createProduct(input: $input) {
-            id
-            name
-            price
-            createdAt
+        mutation CreateProduct($input: ProductAddInput!) {
+          products {
+            add(input: $input) {
+              id
+              name
+              price
+              desc
+              createdAt
+            }
           }
         }
       `;
@@ -102,6 +106,8 @@ export const ProductManagement: React.FC = () => {
             input: {
               name: name.trim(),
               price: parseFloat(price),
+              desc: desc.trim() || undefined,
+              categoryId: 'demo-category-id', // Demo category ID - in real app, this would be selected by user
             },
           },
         }),
@@ -111,14 +117,23 @@ export const ProductManagement: React.FC = () => {
       console.log('[DEBUG_LOG] Create product response:', result);
 
       if (result.errors) {
-        throw new Error(handleGraphQLErrors(result.errors));
+        const errorMessage = handleGraphQLErrors(result.errors);
+        if (errorMessage.includes('User is not authenticated')) {
+          setError(
+            'Demo Limitation: The server requires valid authentication tokens, but no authentication endpoints are available. This is a server configuration issue - in a real application, you would have working login endpoints.'
+          );
+        } else {
+          setError(`Failed to create product: ${errorMessage}`);
+        }
+        return;
       }
 
-      if (result.data?.createProduct) {
-        setSuccess(`Product "${result.data.createProduct.name}" created successfully!`);
+      if (result.data?.products?.add) {
+        setSuccess(`Product "${result.data.products.add.name}" created successfully!`);
         setName('');
         setPrice('');
-        console.log('[DEBUG_LOG] Product created successfully:', result.data.createProduct);
+        setDesc('');
+        console.log('[DEBUG_LOG] Product created successfully:', result.data.products.add);
       } else {
         throw new Error('No product data returned');
       }
@@ -134,20 +149,14 @@ export const ProductManagement: React.FC = () => {
     <Container>
       <Title>Product Management</Title>
       <Form onSubmit={handleSubmit}>
+        <Input type="text" placeholder="Product name" value={name} onChange={(e) => setName(e.target.value)} required />
         <Input
           type="text"
-          placeholder="Product name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+          placeholder="Description (optional)"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
         />
-        <Input
-          type="number"
-          placeholder="Price"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
+        <Input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Creating...' : 'Create Product'}
         </Button>
