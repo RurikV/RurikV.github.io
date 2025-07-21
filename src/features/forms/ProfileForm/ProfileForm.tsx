@@ -70,6 +70,28 @@ const ErrorMessage = styledComponents.span`
   margin-top: 4px;
 `;
 
+const CheckboxContainer = styledComponents.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const Checkbox = styledComponents.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+`;
+
+const CheckboxLabel = styledComponents.label`
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
 const SubmitButton = styledComponents.button`
   background: #27ae60;
   color: white;
@@ -110,11 +132,13 @@ const validateForm = (values: ProfileFormData): Partial<ProfileFormData> => {
     errors.about = 'About must be at least 10 characters long';
   }
 
+  // No validation needed for isAdmin checkbox
+
   return errors;
 };
 
 export const ProfileForm: React.FC<ProfileFormProps> = ({
-  initialValues = { name: '', about: '' },
+  initialValues = { name: '', about: '', isAdmin: false },
   onSubmit,
   className,
 }) => {
@@ -124,7 +148,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
 
   const handleChange =
     (field: keyof ProfileFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const newValues = { ...values, [field]: e.target.value };
+      const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
+      const newValues = { ...values, [field]: value };
       setValues(newValues);
 
       // Clear error when user starts typing
@@ -155,7 +180,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       onSubmit(values);
 
       // Clear form after successful submission
-      setValues({ name: '', about: '' });
+      setValues({ name: '', about: '', isAdmin: false });
       setTouched({});
       setErrors({});
     }
@@ -188,6 +213,15 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           placeholder="Tell us about yourself"
         />
         {touched.about && errors.about && <ErrorMessage>{errors.about}</ErrorMessage>}
+      </FormField>
+
+      <FormField>
+        <CheckboxContainer>
+          <CheckboxLabel htmlFor="isAdmin">
+            <Checkbox id="isAdmin" type="checkbox" checked={values.isAdmin} onChange={handleChange('isAdmin')} />
+            Admin User
+          </CheckboxLabel>
+        </CheckboxContainer>
       </FormField>
 
       <SubmitButton type="submit">Save Profile</SubmitButton>

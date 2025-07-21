@@ -39,6 +39,7 @@ export const Default: Story = {
     initialValues: {
       name: '',
       about: '',
+      isAdmin: false,
     },
   },
 };
@@ -49,6 +50,7 @@ export const WithInitialValues: Story = {
     initialValues: {
       name: 'John Doe',
       about: 'I am a passionate pickle enthusiast who loves trying different varieties of pickled vegetables.',
+      isAdmin: false,
     },
   },
 };
@@ -59,6 +61,7 @@ export const EmptyForm: Story = {
     initialValues: {
       name: '',
       about: '',
+      isAdmin: false,
     },
   },
   parameters: {
@@ -79,6 +82,7 @@ export const Interactive: Story = {
     initialValues: {
       name: '',
       about: '',
+      isAdmin: false,
     },
   },
   parameters: {

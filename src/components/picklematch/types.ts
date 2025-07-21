@@ -74,6 +74,7 @@ export interface CartItemProps {
 export interface ProfileFormData {
   name: string;
   about: string;
+  isAdmin: boolean;
 }
 
 export interface ProfileFormProps {

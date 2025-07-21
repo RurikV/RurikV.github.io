@@ -8,6 +8,8 @@ import { LanguageSwitcher } from '../../LanguageSwitcher/LanguageSwitcher';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { ProfileForm } from '../../../features/forms/ProfileForm';
 import { AuthForm } from '../../../features/forms/AuthForm';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { login, logout, updateProfile } from '../../../store/slices/authSlice';
 
 // Keyframe animations
 const shimmer = keyframes`
@@ -416,6 +418,10 @@ const CloseButton = styled.button`
 
 export const Header: FC<HeaderProps> = ({ className }) => {
   const { t } = useLanguage();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, profile } = useAppSelector((state) => state.auth);
+  const { totalItems } = useAppSelector((state) => state.cart);
+
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -427,6 +433,10 @@ export const Header: FC<HeaderProps> = ({ className }) => {
     setIsAuthModalOpen(true);
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   const handleCloseModal = () => {
     setIsProfileModalOpen(false);
     setIsAuthModalOpen(false);
@@ -434,18 +444,25 @@ export const Header: FC<HeaderProps> = ({ className }) => {
 
   const handleProfileSubmit = (values: ProfileFormData) => {
     console.log('[DEBUG_LOG] Profile updated from header:', values);
+    dispatch(updateProfile(values));
     // Close modal after successful submission
     setIsProfileModalOpen(false);
   };
 
   const handleLoginSubmit = (values: LoginFormData) => {
     console.log('[DEBUG_LOG] Login submitted from header:', values);
+    // Generate fake token for authentication
+    const fakeToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    dispatch(login(fakeToken));
     // Close modal after successful submission
     setIsAuthModalOpen(false);
   };
 
   const handleRegisterSubmit = (values: RegisterFormData) => {
     console.log('[DEBUG_LOG] Registration submitted from header:', values);
+    // Generate fake token for authentication
+    const fakeToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    dispatch(login(fakeToken));
     // Close modal after successful submission
     setIsAuthModalOpen(false);
   };
@@ -457,11 +474,22 @@ export const Header: FC<HeaderProps> = ({ className }) => {
           <Logo />
           <HeaderNav>
             <HeaderNavLink to="/courts">{t('courts')}</HeaderNavLink>
-            <HeaderNavLink to="/cart">Cart</HeaderNavLink>
+            <HeaderNavLink to="/cart">Cart {totalItems > 0 && `(${totalItems})`}</HeaderNavLink>
             <HeaderNavLink to="/profile">{t('profile')}</HeaderNavLink>
-            <HeaderLink href="javascript:void(0)" onClick={handleAuthClick}>
-              {t('login')}
-            </HeaderLink>
+            {isAuthenticated && profile ? (
+              <>
+                <HeaderLink href="javascript:void(0)" onClick={handleProfileClick}>
+                  {profile.name} ({profile.role})
+                </HeaderLink>
+                <HeaderLink href="javascript:void(0)" onClick={handleLogout}>
+                  Logout
+                </HeaderLink>
+              </>
+            ) : (
+              <HeaderLink href="javascript:void(0)" onClick={handleAuthClick}>
+                {t('login')}
+              </HeaderLink>
+            )}
             <LanguageSwitcher className="language-switcher--compact" />
             <ThemeSwitcher className="theme-switcher--compact" />
           </HeaderNav>
@@ -474,7 +502,14 @@ export const Header: FC<HeaderProps> = ({ className }) => {
           <CloseButton onClick={handleCloseModal} aria-label="Close profile form">
             ×
           </CloseButton>
-          <ProfileForm onSubmit={handleProfileSubmit} initialValues={{ name: '', about: '' }} />
+          <ProfileForm
+            onSubmit={handleProfileSubmit}
+            initialValues={{
+              name: profile?.name || '',
+              about: profile?.about || 'Tell us about yourself',
+              isAdmin: profile?.role === 'admin',
+            }}
+          />
         </ModalContent>
       </ModalOverlay>
 

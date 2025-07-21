@@ -6,6 +6,13 @@ import { Collapse } from '../components/picklematch/Collapse';
 import { Tip } from '../components/picklematch/Tip';
 import { CroppedText } from '../components/picklematch/CroppedText';
 import { SliderRange } from '../components/picklematch/SliderRange';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
+import { addLocation, updateLocation, addCourt, updateCourt } from '../store/slices/locationsSlice';
+import { addGameType, updateGameType } from '../store/slices/gameTypesSlice';
+import { CourtForm, CourtFormData } from '../components/admin/forms/CourtForm';
+import { LocationForm, LocationFormData } from '../components/admin/forms/LocationForm';
+import { GameTypeForm, GameTypeFormData } from '../components/admin/forms/GameTypeForm';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -123,6 +130,52 @@ const BookButton = styled.button`
   }
 `;
 
+const AdminSection = styled.div`
+  background: ${(props) => props.theme.colorBgSecondary};
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  border: 2px solid #28a745;
+`;
+
+const AdminButtons = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+const AdminButton = styled.button`
+  padding: 10px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #218838;
+  }
+`;
+
+const EditButton = styled.button`
+  padding: 6px 12px;
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #e0a800;
+  }
+`;
+
 const ModalOverlay = styled.div<{ isVisible: boolean }>`
   position: fixed;
   top: 0;
@@ -200,45 +253,8 @@ const TimeSlot = styled.button`
   }
 `;
 
-// Sample data (extracted from CourtBookingApp)
-const locations: Location[] = [
-  {
-    id: 'koorti',
-    name: 'Koorti Sports Complex',
-    address: 'Koorti tee 1, Nashville, Tennessee',
-    coordinates: { lat: 59.437, lng: 24.7536 },
-    courts: [
-      {
-        id: 'koorti-tennis-1',
-        name: 'Tennis Court A',
-        location: 'Koorti',
-        games: ['tennis'],
-        pricePerHour: 25,
-        rating: 4.5,
-        description: 'Professional tennis court with high-quality surface and excellent lighting.',
-        amenities: ['Lighting', 'Seating', 'Equipment rental', 'Changing rooms'],
-        coordinates: { lat: 59.437, lng: 24.7536 },
-        image: 'https://via.placeholder.com/300x200/4CAF50/ffffff?text=Tennis+Court',
-        availability: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '18:00', '19:00'],
-      },
-      {
-        id: 'koorti-pickleball-1',
-        name: 'Pickleball Court Premium',
-        location: 'Koorti',
-        games: ['pickleball'],
-        pricePerHour: 20,
-        rating: 4.8,
-        description: 'State-of-the-art pickleball court designed for both beginners and advanced players.',
-        amenities: ['Professional net', 'Court lines', 'Equipment rental', 'Storage'],
-        coordinates: { lat: 59.4371, lng: 24.7537 },
-        image: 'https://via.placeholder.com/300x200/2196F3/ffffff?text=Pickleball+Court',
-        availability: ['08:00', '09:00', '12:00', '13:00', '17:00', '18:00', '20:00'],
-      },
-    ],
-  },
-];
-
 const CourtsPage: FC = () => {
+  const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedGame, setSelectedGame] = useState<string>('');
@@ -246,6 +262,16 @@ const CourtsPage: FC = () => {
   const [ratingFilter, setRatingFilter] = useState<number>(0);
   const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
+  const [adminModalType, setAdminModalType] = useState<
+    'add-court' | 'edit-court' | 'add-location' | 'edit-location' | 'add-game' | 'edit-game' | null
+  >(null);
+
+  // Get data from Redux store
+  const { profile } = useAppSelector((state) => state.auth);
+  const { locations } = useAppSelector((state) => state.locations);
+  const { gameTypes } = useAppSelector((state) => state.gameTypes);
+  const isAdmin = profile?.role === 'admin';
 
   // Check if modal should be open based on URL
   React.useEffect(() => {
@@ -290,9 +316,94 @@ const CourtsPage: FC = () => {
     }
   };
 
+  // Admin functionality handlers
+  const handleOpenAdminModal = (
+    type: 'add-court' | 'edit-court' | 'add-location' | 'edit-location' | 'add-game' | 'edit-game'
+  ) => {
+    setAdminModalType(type);
+    setShowAdminModal(true);
+  };
+
+  const handleCloseAdminModal = () => {
+    setShowAdminModal(false);
+    setAdminModalType(null);
+  };
+
+  // Form submission handlers
+  const handleCourtSubmit = (data: CourtFormData) => {
+    console.log('[DEBUG_LOG] Court form submitted:', data);
+
+    // Find the location for this court
+    const location = locations.find((loc) => loc.id === data.locationId);
+    if (!location) {
+      console.error('Location not found for court');
+      return;
+    }
+
+    // Convert form data to Court format
+    const courtData = {
+      id: data.id,
+      name: data.name,
+      location: location.name,
+      games: data.games,
+      pricePerHour: data.pricePerHour,
+      rating: data.rating,
+      description: data.description,
+      amenities: data.amenities,
+      coordinates: data.coordinates,
+      image: data.image,
+      availability: data.availability,
+    };
+
+    if (adminModalType === 'add-court') {
+      dispatch(addCourt({ locationId: data.locationId, court: courtData }));
+    } else if (adminModalType === 'edit-court') {
+      dispatch(updateCourt({ locationId: data.locationId, court: courtData }));
+    }
+
+    handleCloseAdminModal();
+  };
+
+  const handleLocationSubmit = (data: LocationFormData) => {
+    console.log('[DEBUG_LOG] Location form submitted:', data);
+
+    if (adminModalType === 'add-location') {
+      dispatch(addLocation(data));
+    } else if (adminModalType === 'edit-location') {
+      dispatch(updateLocation(data));
+    }
+
+    handleCloseAdminModal();
+  };
+
+  const handleGameTypeSubmit = (data: GameTypeFormData) => {
+    console.log('[DEBUG_LOG] Game type form submitted:', data);
+
+    if (adminModalType === 'add-game') {
+      dispatch(addGameType(data));
+    } else if (adminModalType === 'edit-game') {
+      dispatch(updateGameType(data));
+    }
+
+    handleCloseAdminModal();
+  };
+
   return (
     <PageContainer>
       <PageTitle>Courts & Booking</PageTitle>
+
+      {/* Admin Section - Only visible to admins */}
+      {isAdmin && (
+        <AdminSection>
+          <h2>🔧 Admin Panel</h2>
+          <p>Manage courts, locations, and games</p>
+          <AdminButtons>
+            <AdminButton onClick={() => handleOpenAdminModal('add-court')}>Add New Court</AdminButton>
+            <AdminButton onClick={() => handleOpenAdminModal('add-location')}>Add New Location</AdminButton>
+            <AdminButton onClick={() => handleOpenAdminModal('add-game')}>Add New Game Type</AdminButton>
+          </AdminButtons>
+        </AdminSection>
+      )}
 
       <FiltersSection>
         <h2>Find Your Perfect Court</h2>
@@ -321,9 +432,11 @@ const CourtsPage: FC = () => {
             </Tip>
             <FilterSelect id="game-select" value={selectedGame} onChange={(e) => setSelectedGame(e.target.value)}>
               <option value="">All Games</option>
-              <option value="tennis">Tennis</option>
-              <option value="pickleball">Pickleball</option>
-              <option value="volleyball">Volleyball</option>
+              {gameTypes.map((gameType) => (
+                <option key={gameType.id} value={gameType.id}>
+                  {gameType.name}
+                </option>
+              ))}
             </FilterSelect>
           </FilterGroup>
 
@@ -350,7 +463,10 @@ const CourtsPage: FC = () => {
             <CourtCard key={court.id}>
               <CourtImage src={court.image} alt={court.name} />
               <CourtInfo>
-                <CourtName>{court.name}</CourtName>
+                <CourtName>
+                  {court.name}
+                  {isAdmin && <EditButton onClick={() => handleOpenAdminModal('edit-court')}>Edit Court</EditButton>}
+                </CourtName>
                 <CourtLocation>{court.location}</CourtLocation>
                 <GameTags>
                   {court.games.map((game) => (
@@ -416,6 +532,45 @@ const CourtsPage: FC = () => {
                 <CancelButton onClick={handleCloseModal}>Cancel</CancelButton>
               </ModalActions>
             </>
+          )}
+        </ModalContent>
+      </ModalOverlay>
+
+      {/* Admin Modal - Only accessible to admins */}
+      <ModalOverlay isVisible={showAdminModal} onClick={handleCloseAdminModal}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          {adminModalType === 'add-court' && (
+            <CourtForm onSubmit={handleCourtSubmit} onCancel={handleCloseAdminModal} isEdit={false} />
+          )}
+          {adminModalType === 'edit-court' && (
+            <CourtForm
+              initialData={selectedCourt || undefined}
+              onSubmit={handleCourtSubmit}
+              onCancel={handleCloseAdminModal}
+              isEdit={true}
+            />
+          )}
+          {adminModalType === 'add-location' && (
+            <LocationForm onSubmit={handleLocationSubmit} onCancel={handleCloseAdminModal} isEdit={false} />
+          )}
+          {adminModalType === 'edit-location' && (
+            <LocationForm
+              initialData={locations.find((loc) => loc.id === selectedLocation) || undefined}
+              onSubmit={handleLocationSubmit}
+              onCancel={handleCloseAdminModal}
+              isEdit={true}
+            />
+          )}
+          {adminModalType === 'add-game' && (
+            <GameTypeForm onSubmit={handleGameTypeSubmit} onCancel={handleCloseAdminModal} isEdit={false} />
+          )}
+          {adminModalType === 'edit-game' && (
+            <GameTypeForm
+              initialData={gameTypes.find((game) => game.id === selectedGame) || undefined}
+              onSubmit={handleGameTypeSubmit}
+              onCancel={handleCloseAdminModal}
+              isEdit={true}
+            />
           )}
         </ModalContent>
       </ModalOverlay>

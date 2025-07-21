@@ -1,9 +1,17 @@
 import React, { FC } from 'react';
 import { BriefProductProps } from '../types';
 import { AddToCartButton } from './AddToCartButton';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { addToCart, removeFromCart, updateQuantity } from '../../../store/slices/cartSlice';
 import './BriefProduct.css';
 
-export const BriefProduct: FC<BriefProductProps> = ({ product, cartCount = 0 }) => {
+export const BriefProduct: FC<BriefProductProps> = ({ product }) => {
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+
+  // Get current cart count for this product
+  const cartItem = cartItems.find((item: any) => item.id === product.id);
+  const cartCount = cartItem ? cartItem.quantity : 0;
   const { price, image, title, description } = product;
 
   const truncateDescription = (text: string, maxLength = 80) => {
@@ -13,6 +21,26 @@ export const BriefProduct: FC<BriefProductProps> = ({ product, cartCount = 0 }) 
 
   const formatPrice = (price: number) => {
     return `${price.toFixed(2)} ₽`;
+  };
+
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        image: product.image,
+        description: product.description,
+      })
+    );
+  };
+
+  const handleUpdateQuantity = (newQuantity: number) => {
+    if (newQuantity === 0) {
+      dispatch(removeFromCart(product.id));
+    } else {
+      dispatch(updateQuantity({ id: product.id, quantity: newQuantity }));
+    }
   };
 
   return (
@@ -40,7 +68,7 @@ export const BriefProduct: FC<BriefProductProps> = ({ product, cartCount = 0 }) 
         <p className="picklematch-brief-product-description">{truncateDescription(description)}</p>
 
         <div className="picklematch-brief-product-actions">
-          <AddToCartButton count={cartCount} />
+          <AddToCartButton value={cartCount} onChange={handleUpdateQuantity} onAdd={handleAddToCart} />
         </div>
       </div>
     </div>
