@@ -95,6 +95,11 @@ module.exports = (_, args) => {
         template: './index.html',
         favicon: './favicon.svg',
       }),
+      new HtmlWebpackPlugin({
+        filename: '404.html',
+        template: './404.html',
+        inject: false,
+      }),
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
         filename: 'css/[name].css',
