@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { BriefProductProps } from '../types';
-import { AddToCartButton } from './AddToCartButton';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { addToCart, removeFromCart, updateQuantity } from '../../../store/slices/cartSlice';
+import { BriefProductProps } from '../../types';
+import { AddToCartButton } from '../AddToCartButton/AddToCartButton';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { addToCart, removeFromCart, updateQuantity } from '../../../../store/slices/cartSlice';
 import './BriefProduct.css';
 
 export const BriefProduct: FC<BriefProductProps> = ({ product }) => {

@@ -7,7 +7,7 @@ import {
   withResponsiveStyles,
   StyledButton,
   ResponsiveProps,
-} from '../../shared/ResponsiveStyles';
+} from '../../../shared/ResponsiveStyles';
 
 // Enhanced interface with state hoisting support
 export interface AddToCartButtonProps extends ResponsiveProps {
