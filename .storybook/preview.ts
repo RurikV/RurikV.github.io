@@ -1,7 +1,9 @@
 import type { Preview } from "@storybook/react";
 import React from 'react';
+import { Provider } from 'react-redux';
 import { ThemeContextProvider } from '../src/styles/GlobalStyles';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
+import { store } from '../src/store';
 import '../src/i18n/config';
 
 // Theme decorator to wrap stories with ThemeContextProvider
@@ -16,12 +18,16 @@ const withTheme = (Story, context) => {
   }
   
   return React.createElement(
-    ThemeContextProvider,
-    { initialTheme: theme },
+    Provider,
+    { store },
     React.createElement(
-      LanguageProvider,
-      {},
-      React.createElement(Story)
+      ThemeContextProvider,
+      { initialTheme: theme },
+      React.createElement(
+        LanguageProvider,
+        {},
+        React.createElement(Story)
+      )
     )
   );
 };

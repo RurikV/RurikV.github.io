@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { BriefProductProps } from '../../types';
 import { AddToCartButton } from '../AddToCartButton/AddToCartButton';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
-import { addToCart, removeFromCart, updateQuantity } from '../../../../store/slices/cartSlice';
+import { addToCart, removeFromCart, updateQuantity, CartItem } from '../../../../store/slices/cartSlice';
 import './BriefProduct.css';
 
 export const BriefProduct: FC<BriefProductProps> = ({ product }) => {
@@ -10,7 +10,7 @@ export const BriefProduct: FC<BriefProductProps> = ({ product }) => {
   const cartItems = useAppSelector((state) => state.cart.items);
 
   // Get current cart count for this product
-  const cartItem = cartItems.find((item: any) => item.id === product.id);
+  const cartItem = cartItems.find((item: CartItem) => item.id === product.id);
   const cartCount = cartItem ? cartItem.quantity : 0;
   const { price, image, title, description } = product;
 

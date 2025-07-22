@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { CartItemProps } from '../types';
+import { CartItemProps } from '../../types';
 import './CartItem.css';
 
 export const CartItem: FC<CartItemProps> = ({ product, count, onRemove }) => {
