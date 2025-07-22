@@ -89,6 +89,26 @@ const ErrorMessage = styledComponents.div`
   padding: 8px;
 `;
 
+const RetryButton = styledComponents.button`
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 8px;
+  
+  &:hover {
+    background: #2980b9;
+  }
+  
+  &:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+  }
+`;
+
 const LoadMoreTrigger = styledComponents.div`
   height: 20px;
   display: flex;
@@ -144,6 +164,7 @@ export const DynamicLoading: React.FC = () => {
   const [error, setError] = useState('');
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [networkError, setNetworkError] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const loadData = useCallback(
@@ -156,6 +177,7 @@ export const DynamicLoading: React.FC = () => {
 
       setIsLoading(true);
       setError('');
+      setNetworkError(false);
 
       try {
         console.log(`[DEBUG_LOG] Loading ${dataType} page ${pageNum}`);
@@ -320,7 +342,18 @@ export const DynamicLoading: React.FC = () => {
         console.log(`[DEBUG_LOG] Loaded ${(newItems || []).length} ${dataType} items for page ${pageNum}`);
       } catch (err) {
         console.error(`[DEBUG_LOG] Error loading ${dataType}:`, err);
-        setError(`Failed to load ${dataType}`);
+
+        // Handle network errors specifically
+        if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+          setError(`Network error: Unable to connect to server. Please check your internet connection and try again.`);
+          setNetworkError(true);
+          // Stop infinite scroll on network errors
+          setHasMore(false);
+        } else {
+          setError(`Failed to load ${dataType}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+          // For other errors, also stop infinite scroll to prevent loops
+          setHasMore(false);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -336,6 +369,18 @@ export const DynamicLoading: React.FC = () => {
     setPage(1);
     setHasMore(true);
     setError('');
+    setNetworkError(false);
+  };
+
+  const handleRetry = () => {
+    console.log('[DEBUG_LOG] Retrying data load...');
+    setError('');
+    setNetworkError(false);
+    setHasMore(true);
+
+    // If we have no items, retry from page 1, otherwise retry from current page
+    const retryPage = items.length === 0 ? 1 : page;
+    loadData(retryPage, items.length === 0);
   };
 
   // IntersectionObserver for infinite scroll
@@ -417,7 +462,16 @@ export const DynamicLoading: React.FC = () => {
         Loaded: {items.length} {dataType} | Page: {page} | Has More: {hasMore ? 'Yes' : 'No'}
       </Stats>
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {error && (
+        <div>
+          <ErrorMessage>{error}</ErrorMessage>
+          {networkError && (
+            <RetryButton onClick={handleRetry} disabled={isLoading}>
+              {isLoading ? 'Retrying...' : 'Retry'}
+            </RetryButton>
+          )}
+        </div>
+      )}
 
       <ItemsList>
         {items.map(renderItem)}
