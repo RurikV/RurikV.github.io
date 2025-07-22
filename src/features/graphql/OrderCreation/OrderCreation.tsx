@@ -24,12 +24,25 @@ const Form = styledComponents.form`
 
 const ProductRow = styledComponents.div`
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
   padding: 8px;
   border: 1px solid #e1e8ed;
   border-radius: 6px;
   background: #f8f9fa;
+`;
+
+const ProductInputGrid = styledComponents.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-items: center;
+`;
+
+const ProductActions = styledComponents.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
 `;
 
 const Input = styledComponents.input`
@@ -45,7 +58,7 @@ const QuantityInput = styledComponents.input`
   border: 1px solid #e1e8ed;
   border-radius: 6px;
   font-size: 14px;
-  width: 80px;
+  width: 100%;
 `;
 
 const Button = styledComponents.button`
@@ -252,38 +265,42 @@ export const OrderCreation: React.FC = () => {
 
         {products.map((product, index) => (
           <ProductRow key={index}>
-            <Input
-              type="text"
-              placeholder="Product ID"
-              value={product.id}
-              onChange={(e) => updateProduct(index, 'id', e.target.value)}
-              required
-            />
-            <Input
-              type="text"
-              placeholder="Product name (display only)"
-              value={product.productName}
-              onChange={(e) => updateProduct(index, 'productName', e.target.value)}
-            />
-            <Input
-              type="number"
-              step="0.01"
-              placeholder="Price (display only)"
-              value={product.price || ''}
-              onChange={(e) => updateProduct(index, 'price', parseFloat(e.target.value) || 0)}
-            />
-            <QuantityInput
-              type="number"
-              min="1"
-              placeholder="Qty"
-              value={product.quantity}
-              onChange={(e) => updateProduct(index, 'quantity', parseInt(e.target.value) || 1)}
-              required
-            />
+            <ProductInputGrid>
+              <Input
+                type="text"
+                placeholder="Product ID"
+                value={product.id}
+                onChange={(e) => updateProduct(index, 'id', e.target.value)}
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Product name (display only)"
+                value={product.productName}
+                onChange={(e) => updateProduct(index, 'productName', e.target.value)}
+              />
+              <Input
+                type="number"
+                step="0.01"
+                placeholder="Price (display only)"
+                value={product.price || ''}
+                onChange={(e) => updateProduct(index, 'price', parseFloat(e.target.value) || 0)}
+              />
+              <QuantityInput
+                type="number"
+                min="1"
+                placeholder="Qty"
+                value={product.quantity}
+                onChange={(e) => updateProduct(index, 'quantity', parseInt(e.target.value) || 1)}
+                required
+              />
+            </ProductInputGrid>
             {products.length > 1 && (
-              <RemoveButton type="button" onClick={() => removeProduct(index)}>
-                Remove
-              </RemoveButton>
+              <ProductActions>
+                <RemoveButton type="button" onClick={() => removeProduct(index)}>
+                  Remove
+                </RemoveButton>
+              </ProductActions>
             )}
           </ProductRow>
         ))}
