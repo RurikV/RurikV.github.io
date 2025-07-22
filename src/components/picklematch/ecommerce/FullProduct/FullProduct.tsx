@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { FullProductProps } from '../types';
-import { AddToCartButton } from './AddToCartButton';
+import { FullProductProps } from '../../types';
+import { AddToCartButton } from '../AddToCartButton/AddToCartButton';
 import './FullProduct.css';
 
 export const FullProduct: FC<FullProductProps> = ({ product, cartCount = 0 }) => {

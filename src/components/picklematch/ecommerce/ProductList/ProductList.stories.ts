@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ProductList } from './ProductList';
-import { createRandomProducts } from '../dataGenerator';
+import { createRandomProducts } from '../../dataGenerator';
 
 const meta: Meta<typeof ProductList> = {
   title: 'PickleMatch/E-commerce/ProductList',

@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useRef, useCallback } from 'react';
-import { ProductData } from '../types';
-import { createRandomProduct } from '../dataGenerator';
-import { BriefProduct } from './BriefProduct';
+import { ProductData } from '../../types';
+import { createRandomProduct } from '../../dataGenerator';
+import { BriefProduct } from '../BriefProduct/BriefProduct';
 import './ProductList.css';
 
 export interface ProductListProps {
