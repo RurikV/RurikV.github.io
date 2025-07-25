@@ -2,11 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { storage } from '../../utils/storage';
 
+export enum UserRole {
+  User = 'user',
+  Admin = 'admin',
+}
+
 export interface Profile {
   id: string;
   name: string;
   email: string;
-  role: 'user' | 'admin';
+  role: UserRole;
   avatar?: string;
   about?: string;
 }
@@ -40,7 +45,7 @@ const generateFakeProfile = (token: string): Profile => {
     id: `user_${hash}`,
     name: isAdmin ? 'Admin User' : 'Regular User',
     email: isAdmin ? 'admin@picklematch.com' : 'user@picklematch.com',
-    role: isAdmin ? 'admin' : 'user',
+    role: isAdmin ? UserRole.Admin : UserRole.User,
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${hash}`,
     about: isAdmin
       ? 'Administrator with full access to manage courts and games.'
@@ -93,7 +98,7 @@ const authSlice = createSlice({
       if (state.profile) {
         state.profile.name = action.payload.name;
         state.profile.about = action.payload.about;
-        state.profile.role = action.payload.isAdmin ? 'admin' : 'user';
+        state.profile.role = action.payload.isAdmin ? UserRole.Admin : UserRole.User;
       }
     },
   },
