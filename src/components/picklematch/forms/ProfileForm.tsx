@@ -4,6 +4,10 @@ import { z } from 'zod';
 import { ProfileFormProps, ProfileFormData } from '../types';
 import './ProfileForm.css';
 
+// Type definitions for form state management
+type ProfileFormErrors = Partial<Record<keyof ProfileFormData, string>>;
+type ProfileFormTouched = Partial<Record<keyof ProfileFormData, boolean>>;
+
 // ZOD schema for ProfileFormData validation
 const createProfileFormSchema = (t: (key: string, fallback: string) => string) =>
   z.object({
@@ -28,8 +32,8 @@ export const ProfileForm: FC<ProfileFormProps> = ({
 }) => {
   const { t } = useTranslation();
   const [values, setValues] = useState<ProfileFormData>(initialValues);
-  const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormData, string>>>({});
-  const [touched, setTouched] = useState<Partial<Record<keyof ProfileFormData, boolean>>>({});
+  const [errors, setErrors] = useState<ProfileFormErrors>({});
+  const [touched, setTouched] = useState<ProfileFormTouched>({});
 
   const profileFormSchema = createProfileFormSchema(t);
 
@@ -40,20 +44,20 @@ export const ProfileForm: FC<ProfileFormProps> = ({
       return '';
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return error.errors[0]?.message || '';
+        return error.issues[0]?.message || '';
       }
       return '';
     }
   };
 
-  const validateForm = (formValues: ProfileFormData): Partial<Record<keyof ProfileFormData, string>> => {
+  const validateForm = (formValues: ProfileFormData): ProfileFormErrors => {
     try {
       profileFormSchema.parse(formValues);
       return {};
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const formErrors: Partial<Record<keyof ProfileFormData, string>> = {};
-        error.errors.forEach((err) => {
+        const formErrors: ProfileFormErrors = {};
+        error.issues.forEach((err: z.ZodIssue) => {
           if (err.path.length > 0) {
             const fieldName = err.path[0] as keyof ProfileFormData;
             formErrors[fieldName] = err.message;
