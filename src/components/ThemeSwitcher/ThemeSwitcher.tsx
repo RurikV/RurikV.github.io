@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { styled, css } from 'styled-components';
 import { useTheme } from '../../styles/GlobalStyles';
 import {
   responsiveFontSize,
@@ -10,18 +10,151 @@ import {
   ResponsiveProps,
 } from '../shared/ResponsiveStyles';
 
-// Enhanced interface with conditional rendering support
+/**
+ * Props interface for the ThemeSwitcher component.
+ *
+ * Provides comprehensive configuration options for theme switching functionality,
+ * including visual customization, content rendering patterns, and responsive behavior.
+ * Extends ResponsiveProps to inherit compact and className properties.
+ *
+ * @extends ResponsiveProps - Inherits compact?: boolean and className?: string
+ */
 export interface ThemeSwitcherProps extends ResponsiveProps {
+  /**
+   * Controls whether text label is displayed alongside the theme switcher.
+   * When false, only the icon will be shown (if showIcon is true).
+   *
+   * @default true
+   * @example
+   * <ThemeSwitcher showText={false} /> // Icon only
+   * <ThemeSwitcher showText={true} />  // Icon + text
+   */
   showText?: boolean;
+
+  /**
+   * Controls whether icon is displayed in the theme switcher.
+   * When false, only the text will be shown (if showText is true).
+   *
+   * @default true
+   * @example
+   * <ThemeSwitcher showIcon={false} /> // Text only
+   * <ThemeSwitcher showIcon={true} />  // Icon + text
+   */
   showIcon?: boolean;
+
+  /**
+   * Custom text labels for light and dark themes.
+   * Overrides the default text labels ('Dark' for light theme, 'Light' for dark theme).
+   *
+   * @default { light: 'Dark', dark: 'Light' }
+   * @example
+   * <ThemeSwitcher customText={{ light: 'Night Mode', dark: 'Day Mode' }} />
+   */
   customText?: { light: string; dark: string };
+
+  /**
+   * Custom icons for light and dark themes.
+   * Overrides the default icons ('🌙' for light theme, '☀️' for dark theme).
+   *
+   * @default { light: '🌙', dark: '☀️' }
+   * @example
+   * <ThemeSwitcher customIcons={{ light: '🌚', dark: '🌞' }} />
+   */
   customIcons?: { light: string; dark: string };
+
+  /**
+   * Visual variant of the theme switcher component.
+   * - 'default': Standard button with icon and text
+   * - 'minimal': Transparent background with reduced padding
+   * - 'icon-only': Shows only icon, hides text regardless of showText
+   * - 'text-only': Shows only text, hides icon regardless of showIcon
+   *
+   * @default 'default'
+   * @example
+   * <ThemeSwitcher variant="minimal" />
+   * <ThemeSwitcher variant="icon-only" />
+   */
   variant?: 'default' | 'minimal' | 'icon-only' | 'text-only';
+
+  /**
+   * Size variant affecting font size, padding, and overall dimensions.
+   * - 'small': Compact size for tight spaces (min-height: 32px)
+   * - 'medium': Standard size for general use (min-height: 44px)
+   * - 'large': Larger size for prominent placement (min-height: 52px)
+   *
+   * @default 'medium'
+   * @example
+   * <ThemeSwitcher size="small" />  // Compact version
+   * <ThemeSwitcher size="large" />  // Prominent version
+   */
   size?: 'small' | 'medium' | 'large';
+
+  /**
+   * Callback function triggered when theme changes.
+   * Useful for parent components to react to theme switches,
+   * such as updating local state, analytics tracking, or triggering side effects.
+   *
+   * @param theme - The new theme that was switched to ('light' or 'dark')
+   * @example
+   * <ThemeSwitcher onThemeChange={(theme) => console.log(`Switched to ${theme} theme`)} />
+   */
   onThemeChange?: (theme: 'light' | 'dark') => void;
+
+  /**
+   * Flexible children prop supporting both regular React nodes and render prop pattern.
+   * - React.ReactNode: Standard children (JSX elements, strings, etc.)
+   * - Function: Render prop pattern providing theme state and controls
+   *
+   * When used as render prop, provides access to current theme, toggle function,
+   * and other theme-related utilities for complete customization.
+   *
+   * @example
+   * // Regular children
+   * <ThemeSwitcher>Custom Content</ThemeSwitcher>
+   *
+   * // Render prop pattern
+   * <ThemeSwitcher>
+   *   {({ currentTheme, toggleTheme, icon, text }) => (
+   *     <div onClick={toggleTheme}>
+   *       {icon} {currentTheme} mode
+   *     </div>
+   *   )}
+   * </ThemeSwitcher>
+   */
   children?: React.ReactNode | ((props: ThemeSwitcherRenderProps) => React.ReactNode);
+
+  /**
+   * Alternative render prop for custom content rendering.
+   * Similar to children render prop but more explicit for render prop pattern.
+   * Provides theme state and controls for building completely custom UI.
+   *
+   * Takes precedence over children when both are provided.
+   *
+   * @param props - ThemeSwitcherRenderProps containing theme state and controls
+   * @example
+   * <ThemeSwitcher
+   *   renderContent={({ currentTheme, toggleTheme, icon }) => (
+   *     <button onClick={toggleTheme} className="my-custom-button">
+   *       {icon} Switch to {currentTheme === 'light' ? 'dark' : 'light'}
+   *     </button>
+   *   )}
+   * />
+   */
   renderContent?: (props: ThemeSwitcherRenderProps) => React.ReactNode;
-  [key: string]: any;
+
+  /**
+   * Index signature allowing additional props to be passed through to the underlying button element.
+   * Useful for extending functionality with custom attributes, event handlers, or styling props
+   * without explicitly defining them in the interface.
+   *
+   * @example
+   * <ThemeSwitcher
+   *   data-testid="theme-switcher"
+   *   onMouseEnter={() => console.log('hover')}
+   *   customAttribute="value"
+   * />
+   */
+  [key: string]: unknown;
 }
 
 // Render props interface
