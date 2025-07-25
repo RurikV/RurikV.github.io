@@ -81,6 +81,7 @@ export interface ProfileFormProps {
   initialValues?: ProfileFormData;
   onSubmit: (values: ProfileFormData) => void;
   className?: string;
+  namePlaceholder?: string;
 }
 
 export interface ProductFormData {

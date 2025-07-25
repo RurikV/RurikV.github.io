@@ -141,6 +141,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   initialValues = { name: '', about: '', isAdmin: false },
   onSubmit,
   className,
+  namePlaceholder = 'Enter your name',
 }) => {
   const [values, setValues] = useState<ProfileFormData>(initialValues);
   const [errors, setErrors] = useState<Partial<ProfileFormData>>({});
@@ -197,7 +198,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           onChange={handleChange('name')}
           onBlur={handleBlur('name')}
           className={classNames({ error: touched.name && errors.name })}
-          placeholder="Enter your name"
+          placeholder={namePlaceholder}
         />
         {touched.name && errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
       </FormField>

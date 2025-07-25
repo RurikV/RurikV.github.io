@@ -505,10 +505,11 @@ export const Header: FC<HeaderProps> = ({ className }) => {
           <ProfileForm
             onSubmit={handleProfileSubmit}
             initialValues={{
-              name: profile?.name || '',
+              name: '',
               about: profile?.about || 'Tell us about yourself',
               isAdmin: profile?.role === 'admin',
             }}
+            namePlaceholder={profile?.name || 'Enter your name'}
           />
         </ModalContent>
       </ModalOverlay>
