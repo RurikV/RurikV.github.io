@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { storage } from '../../utils/storage';
 
 export interface Profile {
   id: string;
@@ -18,22 +19,14 @@ interface AuthState {
 
 // Helper functions for localStorage
 const getTokenFromStorage = (): string | null => {
-  try {
-    return localStorage.getItem('picklematch_token');
-  } catch {
-    return null;
-  }
+  return storage.get('picklematch_token');
 };
 
 const setTokenToStorage = (token: string | null): void => {
-  try {
-    if (token) {
-      localStorage.setItem('picklematch_token', token);
-    } else {
-      localStorage.removeItem('picklematch_token');
-    }
-  } catch {
-    // Handle localStorage errors silently
+  if (token) {
+    storage.set('picklematch_token', token);
+  } else {
+    storage.remove('picklematch_token');
   }
 };
 
