@@ -1,7 +1,25 @@
 import React, { FC, useState, FormEvent, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 import { ProfileFormProps, ProfileFormData } from '../types';
 import './ProfileForm.css';
+
+// ZOD schema for ProfileFormData validation
+const createProfileFormSchema = (t: (key: string, fallback: string) => string) =>
+  z.object({
+    name: z
+      .string()
+      .min(1, t('forms.profile.name.required', 'Name is required'))
+      .min(2, t('forms.profile.name.minLength', 'Name must be at least 2 characters'))
+      .max(50, t('forms.profile.name.maxLength', 'Name must be less than 50 characters'))
+      .transform((val) => val.trim()),
+    about: z
+      .string()
+      .max(500, t('forms.profile.about.maxLength', 'About must be less than 500 characters'))
+      .optional()
+      .default(''),
+    isAdmin: z.boolean().default(false),
+  });
 
 export const ProfileForm: FC<ProfileFormProps> = ({
   initialValues = { name: '', about: '', isAdmin: false },
@@ -13,44 +31,38 @@ export const ProfileForm: FC<ProfileFormProps> = ({
   const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormData, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof ProfileFormData, boolean>>>({});
 
+  const profileFormSchema = createProfileFormSchema(t);
+
   const validateField = (name: keyof ProfileFormData, value: string | boolean): string => {
-    switch (name) {
-      case 'name':
-        if (typeof value === 'string' && !value.trim()) {
-          return t('forms.profile.name.required', 'Name is required');
-        }
-        if (typeof value === 'string' && value.trim().length < 2) {
-          return t('forms.profile.name.minLength', 'Name must be at least 2 characters');
-        }
-        if (typeof value === 'string' && value.trim().length > 50) {
-          return t('forms.profile.name.maxLength', 'Name must be less than 50 characters');
-        }
-        return '';
-      case 'about':
-        if (typeof value === 'string' && value.trim().length > 500) {
-          return t('forms.profile.about.maxLength', 'About must be less than 500 characters');
-        }
-        return '';
-      case 'isAdmin':
-        // No validation needed for boolean field
-        return '';
-      default:
-        return '';
+    try {
+      const fieldSchema = profileFormSchema.shape[name];
+      fieldSchema.parse(value);
+      return '';
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return error.errors[0]?.message || '';
+      }
+      return '';
     }
   };
 
   const validateForm = (formValues: ProfileFormData): Partial<Record<keyof ProfileFormData, string>> => {
-    const formErrors: Partial<Record<keyof ProfileFormData, string>> = {};
-
-    Object.keys(formValues).forEach((key) => {
-      const fieldName = key as keyof ProfileFormData;
-      const error = validateField(fieldName, formValues[fieldName]);
-      if (error) {
-        formErrors[fieldName] = error;
+    try {
+      profileFormSchema.parse(formValues);
+      return {};
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formErrors: Partial<Record<keyof ProfileFormData, string>> = {};
+        error.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            const fieldName = err.path[0] as keyof ProfileFormData;
+            formErrors[fieldName] = err.message;
+          }
+        });
+        return formErrors;
       }
-    });
-
-    return formErrors;
+      return {};
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
